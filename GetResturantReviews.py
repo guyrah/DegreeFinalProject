@@ -1,6 +1,6 @@
 import simplejson as json
 import os
-
+#
 
 def get_restaurant_reviews(json_file_path, restaurant_ids):
     restaurant_counter = 0
