@@ -2,12 +2,14 @@ import simplejson as json
 import os
 
 
-def get_restaurant_reviews(json_file_path, restaurant_ids):
+def count_restaurant_reviews(json_file_path, restaurant_ids):
     restaurant_counter = 0
     not_restaurant_counter = 0
+
     with open(json_file_path, 'r') as file:
         for line in file:
             line_contents = json.loads(line)
+
             if str(line_contents['business_id']) in restaurant_ids:
                 restaurant_counter = restaurant_counter + 1
             else:
@@ -16,6 +18,28 @@ def get_restaurant_reviews(json_file_path, restaurant_ids):
             print restaurant_counter + not_restaurant_counter
 
 
+    print restaurant_counter
+    print not_restaurant_counter
+
+
+def get_restaurant_reviews(json_file_path, restaurant_ids):
+    restaurant_counter = 0
+    not_restaurant_counter = 0
+    reviews = dict()
+
+    with open(json_file_path, 'r') as file:
+        for i, line in enumerate(file):
+            line_contents = json.loads(line)
+
+            if str(line_contents['business_id']) in restaurant_ids:
+                if not reviews.has_key(line_contents['business_id']):
+                    reviews[line_contents['business_id']] = line_contents['text']
+
+            print i
+
+    with open('reviews.txt', 'w') as file:
+        for line in reviews.values():
+            file.write(line + '\n\n')
 
     print restaurant_counter
     print not_restaurant_counter
