@@ -5,21 +5,33 @@ import os
 def count_restaurant_reviews(json_file_path, restaurant_ids):
     restaurant_counter = 0
     not_restaurant_counter = 0
+    counters = dict()
 
     with open(json_file_path, 'r') as file:
-        for line in file:
+        for i, line in enumerate(file):
             line_contents = json.loads(line)
+            try:
+                if str(line_contents['business_id']) in restaurant_ids:
+                    counters['restaurant_reviews'] = counters.get('restaurant_reviews', 0) + 1
+                if len(str(line_contents['text']).split()) < 150:
+                    counters['reviews_shorter_than_150'] = counters.get('reviews_shorter_than_150', 0) + 1
+                if len(str(line_contents['text']).split()) < 100:
+                    counters['reviews_shorter_than_100'] = counters.get('reviews_shorter_than_100', 0) + 1
+                if any(x in str(line_contents['text']) for x in ['dirty', 'clean']):
+                    counters['clean'] = counters.get('clean', 0) + 1
+                if any(x in str(line_contents['text']) for x in ['fast', 'slow']):
+                    counters['speed'] = counters.get('speed', 0) + 1
+                if any(x in str(line_contents['text']) for x in ['big', 'small']):
+                    counters['size'] = counters.get('size', 0) + 1
+            except Exception as e:
+                counters['exceptions'] = counters.get('exceptions', 0) + 1
+                #print e
 
-            if str(line_contents['business_id']) in restaurant_ids:
-                restaurant_counter = restaurant_counter + 1
-            else:
-                not_restaurant_counter = not_restaurant_counter + 1
-
-            print restaurant_counter + not_restaurant_counter
+            print i
 
 
-    print restaurant_counter
-    print not_restaurant_counter
+    for k,v in counters.iteritems():
+        print str(k) + ': ' + str(v)
 
 
 def get_restaurant_reviews(json_file_path, restaurant_ids):
@@ -33,13 +45,18 @@ def get_restaurant_reviews(json_file_path, restaurant_ids):
 
             if str(line_contents['business_id']) in restaurant_ids:
                 if not reviews.has_key(line_contents['business_id']):
-                    reviews[line_contents['business_id']] = line_contents['text']
+                    try:
+                        reviews[line_contents['business _id']] = str(line_contents['text'])
+                    except Exception as e:
+                        print e
+
 
             print i
 
+
     with open('reviews.txt', 'w') as file:
         for line in reviews.values():
-            file.write(line + '\n\n')
+            file.write(line + '\n----------------------\n')
 
     print restaurant_counter
     print not_restaurant_counter
@@ -77,4 +94,4 @@ restaurant_reviews_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_data
 restaurant_business_ids_path = '/home/osboxes/Desktop/yelp_dataset/resturant_business_ids.txt'
 
 restaurant_ids = get_restaurant_business_id(restaurant_business_file,restaurant_business_ids_path)
-get_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
+count_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
