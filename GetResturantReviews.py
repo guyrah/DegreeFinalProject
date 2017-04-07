@@ -1,5 +1,6 @@
 import simplejson as json
 import os
+import NLP_Utils
 
 
 def count_restaurant_reviews(json_file_path, restaurant_ids):
@@ -65,8 +66,6 @@ def get_restaurant_reviews(json_file_path, restaurant_ids):
 def get_restaurant_business_id(json_file_path, ids_path=None, overwrite=False):
 
     """Read in the json dataset file and return the superset of column names."""
-    column_names = set()
-    categories = set()
     resturant_ids =  list()
 
     # If file already exists and not to overwrite
@@ -89,9 +88,45 @@ def get_restaurant_business_id(json_file_path, ids_path=None, overwrite=False):
     return resturant_ids
 
 
+def create_vocabulary(src_file_path, dst_file_path):
+    exceptions = 0
+    string_manipulate = NLP_Utils.WordManipulator()
+
+    with open(src_file_path,'r') as file:
+        word_counter = dict()
+
+        counter = 1
+        #
+        for line in file:
+            line_contents = json.loads(line)
+
+            try:
+                for word in str(string_manipulate.remove_non_letters(line_contents['text'])).split():
+                    word = string_manipulate.stem_word(word)
+                    word_counter[word] = word_counter.get(word, 0) + 1
+            except Exception as e:
+                print e
+                exceptions += 1
+
+            counter += 1
+
+            if counter > 1000:
+                break
+
+    with open(dst_file_path, 'w') as file:
+        for k, v in word_counter.items():
+            file.write(k + ',' + str(v) + '\n')
+
+    print 'number of exceptions: ', exceptions
+
+
 restaurant_business_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_dataset_business.json'
 restaurant_reviews_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_dataset_review.json'
 restaurant_business_ids_path = '/home/osboxes/Desktop/yelp_dataset/resturant_business_ids.txt'
 
+
+create_vocabulary(restaurant_reviews_file, 'vocabulary.txt')
+"""
 restaurant_ids = get_restaurant_business_id(restaurant_business_file,restaurant_business_ids_path)
 count_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
+"""
