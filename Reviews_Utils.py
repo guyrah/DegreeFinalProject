@@ -14,16 +14,16 @@ def count_restaurant_reviews(json_file_path, restaurant_ids):
             try:
                 if str(line_contents['business_id']) in restaurant_ids:
                     counters['restaurant_reviews'] = counters.get('restaurant_reviews', 0) + 1
-                if len(str(line_contents['text']).split()) < 150:
-                    counters['reviews_shorter_than_150'] = counters.get('reviews_shorter_than_150', 0) + 1
-                if len(str(line_contents['text']).split()) < 100:
-                    counters['reviews_shorter_than_100'] = counters.get('reviews_shorter_than_100', 0) + 1
-                if any(x in str(line_contents['text']) for x in ['dirty', 'clean']):
-                    counters['clean'] = counters.get('clean', 0) + 1
-                if any(x in str(line_contents['text']) for x in ['fast', 'slow']):
-                    counters['speed'] = counters.get('speed', 0) + 1
-                if any(x in str(line_contents['text']) for x in ['big', 'small']):
-                    counters['size'] = counters.get('size', 0) + 1
+                    if len(str(line_contents['text']).split()) < 150:
+                        counters['reviews_shorter_than_150'] = counters.get('reviews_shorter_than_150', 0) + 1
+                    if len(str(line_contents['text']).split()) < 100:
+                        counters['reviews_shorter_than_100'] = counters.get('reviews_shorter_than_100', 0) + 1
+                    if any(x in str(line_contents['text']) for x in ['dirty', 'clean']):
+                        counters['clean'] = counters.get('clean', 0) + 1
+                    if any(x in str(line_contents['text']) for x in ['fast', 'slow']):
+                        counters['speed'] = counters.get('speed', 0) + 1
+                    if any(x in str(line_contents['text']) for x in ['big', 'small']):
+                        counters['size'] = counters.get('size', 0) + 1
             except Exception as e:
                 counters['exceptions'] = counters.get('exceptions', 0) + 1
                 #print e
@@ -125,8 +125,8 @@ restaurant_reviews_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_data
 restaurant_business_ids_path = '/home/osboxes/Desktop/yelp_dataset/resturant_business_ids.txt'
 
 
-create_vocabulary(restaurant_reviews_file, 'vocabulary.txt')
-"""
+#create_vocabulary(restaurant_reviews_file, 'vocabulary.txt')
+
 restaurant_ids = get_restaurant_business_id(restaurant_business_file,restaurant_business_ids_path)
 count_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
-"""
+
