@@ -3,18 +3,17 @@ from stemming.porter2 import stem
 from nltk.stem.porter import *
 
 """
-Class which enables text preparations
+initialize items once
 """
-class WordManipulator:
-    pattern1 = re.compile('[\W_]+')
-    pattern2 = re.compile('\'')
-    stemmer = PorterStemmer()
+pattern1 = re.compile('[\W_]+')
+pattern2 = re.compile('\'')
+stemmer = PorterStemmer()
 
-    def remove_non_letters(self, str):
-        return self.pattern1.sub(' ', self.pattern2.sub('', str))
+def remove_non_letters(str):
+    return pattern1.sub(' ', pattern2.sub('', str))
 
-    def stem_word(self,word):
-        return self.stemmer.stem(word)
+def stem_word(word):
+    return stemmer.stem(word)
 
 """
 A vocabulray item containing
@@ -45,7 +44,23 @@ def read_vocabulary(path):
 
     return vocabulary
 
-
+"""
+    Gets text and vocabulary and transfoms it to hot vector
+"""
 def text_to_hot_vector(text, vocabulary):
-    # TODO:
-    return 1
+    hot_vector = [0] * len(vocabulary)
+    word_counter = dict()
+    words_not_in_vocabulary = 0
+
+    for word in str(remove_non_letters(text)).split():
+        word = stem_word(word)
+        word_counter[word] = word_counter.get(word, 0) + 1
+
+    for word, value in word_counter.iteritems():
+        if vocabulary.has_key(word):
+            hot_vector[vocabulary[word].get_index()] = float(word_counter[word]) / float(vocabulary[word].get_freq())
+        else:
+            words_not_in_vocabulary += 1
+
+
+    return hot_vector
