@@ -1,5 +1,6 @@
 import re
 from stemming.porter2 import stem
+import simplejson as json
 from nltk.stem.porter import *
 
 """
@@ -64,3 +65,54 @@ def text_to_hot_vector(text, vocabulary):
 
 
     return hot_vector
+
+
+def create_vocabulary(src_file_path, dst_file_path):
+    exceptions = 0
+
+    with open(src_file_path,'r') as file:
+        word_counter = dict()
+
+        counter = 1
+        #
+        for line in file:
+            line_contents = json.loads(line)
+
+            try:
+                for word in str(remove_non_letters(line_contents['text'])).split():
+                    word = stem_word(word)
+                    word_counter[word] = word_counter.get(word, 0) + 1
+            except Exception as e:
+                print e
+                exceptions += 1
+
+            counter += 1
+
+            if counter > 1000:
+                break
+
+    with open(dst_file_path, 'w') as file:
+        for k, v in word_counter.items():
+            file.write(k + ',' + str(v) + '\n')
+
+    print 'number of exceptions: ', exceptions
+
+
+def json_to_csv(src_path, tgt_path):
+    fields = ['review_id', 'qualityrank','quality_of_service_rank',\
+              'fast_rank','price_rank','big_dish_rank',\
+              'value_for_money_rank','clean_rank',\
+              'good_for_vegan_rank','good_for_meat_rank']
+
+    with open(src_path,'r') as src_file:
+        with open(tgt_path, 'w') as tgt_file:
+            tgt_file.write(','.join(fields) + '\n')
+
+            # Runns on each line - which supposed to be a doc
+            for line in src_file:
+                current_json = json.loads(line)
+                current_fields = list()
+                for f in fields:
+                    current_fields.append(str(current_json.get(f,'')))
+
+                tgt_file.write(','.join(current_fields) + '\n')
