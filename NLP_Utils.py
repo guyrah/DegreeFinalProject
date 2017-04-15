@@ -116,3 +116,45 @@ def json_to_csv(src_path, tgt_path):
                     current_fields.append(str(current_json.get(f,'')))
 
                 tgt_file.write(','.join(current_fields) + '\n')
+
+
+def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary):
+    """
+       fields = ['review_id', 'qualityrank','quality_of_service_rank',\
+                 'fast_rank','price_rank','big_dish_rank',\
+                 'value_for_money_rank','clean_rank',\
+                 'good_for_vegan_rank','good_for_meat_rank']
+    """
+    with open(src_path,'r') as src_file:
+        data = list()
+        target = list()
+        # Runns on each line - which supposed to be a doc
+        for line in src_file:
+            current_json = json.loads(line)
+            if current_json.has_key(target_field):
+                data.append(text_to_hot_vector(current_json[data_field], vocabulary))
+                target.append(int(current_json[target_field]))
+
+        return data, target
+
+
+def json_stats_counter(src_path):
+    fields = ['qualityrank','quality_of_service_rank',\
+              'fast_rank','price_rank','big_dish_rank',\
+              'value_for_money_rank','clean_rank',\
+              'good_for_vegan_rank','good_for_meat_rank']
+    stats_counter = dict()
+
+    for f in fields:
+        stats_counter[f] = [0] * 4
+
+
+    with open(src_path,'r') as src_file:
+        for line in src_file:
+            current_json = json.loads(line)
+            for f in fields:
+                if current_json.has_key(f):
+                    stats_counter[f][int(current_json[f])] = int(stats_counter.get(f,[0,0,0,0])[int(current_json[f])]) + 1
+
+    for k,v in stats_counter.iteritems():
+        print k, v
