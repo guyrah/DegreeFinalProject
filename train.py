@@ -6,8 +6,8 @@ import pydotplus
 
 data_path = 'tagged_data.json'
 data_field = 'text'
-target_field = 'quality_of_service_rank'
-#target_field = 'qualityrank'
+#target_field = 'quality_of_service_rank'
+target_field = 'qualityrank'
 #target_field = 'value_for_money_rank'
 vocabulary_path = 'vocabulary.txt'
 
