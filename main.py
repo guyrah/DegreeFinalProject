@@ -30,8 +30,8 @@ def __main__():
     else:
         print "Not refreshing tagged data"
 
-    #mode = vectorMode.binary
-    for mode in vectorMode.modes:
+
+    for mode in [vectorMode.tfidf]:
         Logger.log_info("mode: " + mode)
         train.train_qualityrank(DATA_PATH, DATA_FIELD, VOCABULARY_PATH, TESTSET_SIZE, mode)
 

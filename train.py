@@ -38,8 +38,8 @@ def train_qualityrank(data_path, data_field, vocabulary_path, testset_size, mode
     clf = clf.fit(train_data, train_target)
     clfPrediction = list(clf.predict(test_data))
 
-    Logger.log_debug(clfPrediction)
-    Logger.log_debug(test_target)
+    Logger.log_debug("P: " + str(clfPrediction))
+    Logger.log_debug("R: " + str(test_target))
     Logger.log_info ("Decision Tree Score:")
     Logger.log_info(clf.score(test_data, test_target))
 
@@ -53,8 +53,8 @@ def train_qualityrank(data_path, data_field, vocabulary_path, testset_size, mode
     gnb.fit(train_data, train_target)
     gnbPrediction = list(gnb.predict(test_data))
 
-    Logger.log_debug(gnbPrediction)
-    Logger.log_debug(test_target)
+    Logger.log_debug("P: " + str(gnbPrediction))
+    Logger.log_debug("R: " + str(test_target))
     Logger.log_info("Gaussian Naive Bayes Score:")
     Logger.log_info(gnb.score(test_data, test_target))
 
@@ -63,13 +63,13 @@ def train_qualityrank(data_path, data_field, vocabulary_path, testset_size, mode
     svc.fit(train_data, train_target)
     svcPrediction = list(svc.predict(test_data))
 
-    Logger.log_debug(svcPrediction)
-    Logger.log_debug(test_target)
+    Logger.log_debug("P: " + str(svcPrediction))
+    Logger.log_debug("R: " + str(test_target))
     Logger.log_info( "Support Vector Machine Score:")
     Logger.log_info(svc.score(test_data, test_target))
 
 """
-    print "Combined Result:"
+    Logger.log_info("Combined Result:")
     for i in range(0, len(svcPrediction)):
         clfRes = clfPrediction[i]
         gnbRes =  gnbPrediction[i]

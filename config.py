@@ -6,7 +6,7 @@ class vectorMode:
 
 class logLevels:
     error = 0
-    warn = 1
-    info = 2
+    warn  = 1
+    info  = 2
     debug = 3
-    level = info
+    level = debug
