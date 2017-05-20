@@ -118,7 +118,7 @@ def json_to_csv(src_path, tgt_path):
                 tgt_file.write(','.join(current_fields) + '\n')
 
 
-def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary):
+def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary, filter_target_class=None):
     """
        fields = ['review_id', 'qualityrank','quality_of_service_rank',\
                  'fast_rank','price_rank','big_dish_rank',\
@@ -126,15 +126,28 @@ def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary)
                  'good_for_vegan_rank','good_for_meat_rank']
     """
     with open(src_path,'r') as src_file:
+        filtered_count = 0
         data = list()
         target = list()
         # Runns on each line - which supposed to be a doc
         for line in src_file:
             current_json = json.loads(line)
             if current_json.has_key(target_field):
-                data.append(text_to_hot_vector(current_json[data_field], vocabulary))
-                target.append(int(current_json[target_field]))
+                # If no filter is asked
+                if (filter_target_class == None):
+                    data.append(text_to_hot_vector(current_json[data_field], vocabulary))
+                    target.append(int(current_json[target_field]))
+                # If filter is needed
+                else:
+                    # Check if json is valid according to filter
+                    if(int(current_json[target_field]) in filter_target_class):
+                        data.append(text_to_hot_vector(current_json[data_field], vocabulary))
+                        target.append(int(current_json[target_field]))
+                    # If filtered a json
+                    else:
+                        filtered_count += 1
 
+        print 'filtered: ', filtered_count
         return data, target
 
 
