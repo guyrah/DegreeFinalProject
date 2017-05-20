@@ -28,7 +28,7 @@ def get_sequences(mongo_url):
     client = MongoClient(mongo_url)
     db = client.project77DB
 
-    cursor = db.reviews.find({"private_id": {"$gt":0, "$lt":1001}, "fast_rank":{"$exists":False}}).sort("private_id",1)
+    cursor = db.reviews.find({"private_id": {"$gt":0, "$lt":1002}, "qualityrank":{"$exists":False}}).sort("private_id",1)
     curr_index = -2
 
     for i in cursor:

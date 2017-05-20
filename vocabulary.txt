@@ -1,6 +1,7 @@
 cinch,1
 bihari,1
 buckey,1
+sampler,2
 ematei,1
 yellow,3
 poorli,4
@@ -43,6 +44,7 @@ deli,8
 rise,3
 voic,1
 3x,1
+purist,1
 calib,1
 allot,1
 jack,4
@@ -72,6 +74,7 @@ fairfax,1
 9pm,2
 enjoy,73
 chew,3
+kylo,1
 cher,1
 upkeep,1
 bo,1
@@ -97,8 +100,8 @@ amus,1
 asid,1
 perogi,1
 poison,4
-definetli,1
 lucke,2
+definetli,1
 new,77
 net,1
 ever,87
@@ -111,7 +114,7 @@ cochinita,1
 receipt,3
 herb,3
 never,119
-lodg,1
+semolina,1
 meh,5
 here,371
 arrang,3
@@ -129,10 +132,9 @@ daughter,7
 soul,1
 aioli,1
 aks,1
-graini,2
+mgm,4
 anymor,8
 interupt,1
-secur,1
 dri,39
 credit,5
 resto,2
@@ -144,6 +146,7 @@ changer,1
 counti,2
 golden,1
 whatnot,2
+digniti,1
 premad,4
 ground,4
 romant,3
@@ -287,6 +290,7 @@ ball,2
 dell,1
 befor,66
 wrong,30
+julio,1
 lay,1
 beauti,19
 deviat,1
@@ -301,6 +305,7 @@ attempt,2
 third,7
 singapor,1
 croissant,1
+magnific,1
 greet,11
 imposs,3
 greek,12
@@ -336,6 +341,7 @@ japan,1
 vari,5
 manja,1
 yong,2
+confit,1
 stadium,3
 xl,1
 fit,9
@@ -373,7 +379,7 @@ extraaaa,1
 they,570
 spanikopita,1
 interrupt,2
-subtl,1
+caffein,2
 yourself,11
 ther,1
 bibimbap,3
@@ -397,7 +403,8 @@ each,40
 volcano,1
 went,92
 crunchi,7
-side,95
+candi,1
+meal,116
 bone,14
 mean,17
 mojoito,1
@@ -499,7 +506,6 @@ episod,2
 their,252
 tangi,4
 top,77
-iceberg,1
 mcgee,1
 sometim,19
 oppos,2
@@ -521,6 +527,7 @@ consol,1
 complimentari,3
 tool,1
 privaci,1
+grandmoth,1
 took,54
 direct,2
 obnoxi,2
@@ -591,6 +598,7 @@ contact,4
 hum,1
 snob,4
 shortli,3
+passer,1
 expens,20
 menudo,3
 blue,7
@@ -619,6 +627,7 @@ unpleas,1
 ruben,3
 metal,1
 dog,19
+pgh,1
 doe,17
 nana,1
 QC,2
@@ -680,13 +689,14 @@ de,2
 watch,34
 ceil,4
 steakhous,2
-hudson,1
+kouign,1
+bubbi,1
 thise,1
 watermelon,2
-shitti,2
+120,1
 dy,1
 report,2
-scroll,1
+iceberg,1
 lester,2
 youtub,1
 chutney,1
@@ -702,7 +712,6 @@ public,3
 sauc,111
 twice,29
 bad,75
-sparkl,1
 ban,1
 bao,2
 steak,59
@@ -719,7 +728,6 @@ nut,4
 nur,1
 beg,2
 resist,2
-land,3
 european,2
 respons,7
 fail,7
@@ -737,6 +745,7 @@ duff,1
 bicker,1
 away,46
 gentleman,3
+27,1
 extol,1
 iri,1
 figur,10
@@ -752,6 +761,7 @@ men,4
 omg,8
 wa,1558
 kimbal,1
+lodg,1
 lover,3
 uninspir,2
 boss,1
@@ -818,7 +828,6 @@ lastli,1
 fri,146
 three,20
 been,193
-revolv,1
 beer,62
 much,102
 beet,7
@@ -830,8 +839,8 @@ dilworth,1
 slushi,1
 warmth,1
 tini,10
-katsuya,1
-ador,1
+board,5
+ruth,1
 life,6
 recomend,2
 mushroom,12
@@ -855,6 +864,7 @@ chill,14
 balsam,2
 east,15
 tank,1
+oversight,1
 akita,1
 tang,1
 servic,370
@@ -910,9 +920,9 @@ big,42
 ricotta,1
 umami,1
 costum,1
+57,1
 complet,18
 wheel,1
-steer,1
 moussaka,1
 fuss,1
 evid,1
@@ -964,6 +974,7 @@ yea,1
 peic,1
 elabor,1
 mid,1
+lorrain,1
 via,1
 human,1
 sewag,1
@@ -980,7 +991,7 @@ straw,1
 shout,2
 spread,8
 cordon,1
-board,5
+katsuya,1
 diaper,2
 prison,1
 enchilada,2
@@ -988,6 +999,7 @@ els,35
 supervisor,1
 save,13
 explanatori,1
+napa,1
 hav,1
 gave,24
 opt,5
@@ -1023,8 +1035,9 @@ confid,2
 night,107
 hung,2
 shawarma,3
-realllllyyyyi,1
+baysid,2
 sweeten,1
+gooooood,1
 tombston,1
 jean,1
 www,1
@@ -1091,13 +1104,13 @@ super,51
 shuck,1
 plop,1
 zur,1
-oversight,1
 dilig,1
 oreo,1
 coast,5
 diner,12
 filipino,4
 cowboy,1
+realllllyyyyi,1
 plum,2
 curri,28
 surround,3
@@ -1112,6 +1125,7 @@ sept,1
 produc,3
 unrespons,1
 ordinari,1
+chese,1
 cubano,1
 guiness,1
 salisburi,1
@@ -1208,11 +1222,9 @@ inde,2
 vista,1
 ehhh,1
 floor,10
-cottag,1
 excel,73
 ne,1
 tooooo,1
-napa,1
 venison,1
 jone,2
 test,3
@@ -1223,6 +1235,7 @@ smell,10
 roll,146
 woodbridg,1
 ike,1
+yummier,1
 matur,1
 hurri,4
 E,2
@@ -1272,7 +1285,6 @@ tee,1
 roy,2
 signific,3
 stumbl,8
-overbear,1
 selbst,1
 sukka,1
 skin,5
@@ -1330,6 +1342,7 @@ brother,4
 item,40
 soooo,2
 statu,1
+overbear,1
 subway,8
 team,6
 cooki,14
@@ -1353,6 +1366,7 @@ everytim,2
 colin,1
 cost,15
 ravioli,1
+collag,1
 jamm,1
 patient,5
 bake,17
@@ -1389,7 +1403,6 @@ slot,1
 palmer,1
 den,2
 asparagu,2
-magnific,1
 amalgam,1
 gener,37
 learn,5
@@ -1477,7 +1490,6 @@ today,25
 steeler,1
 chapter,1
 sprite,1
-chowder,1
 club,8
 peopl,90
 appet,45
@@ -1496,6 +1508,7 @@ effort,2
 ooz,1
 markham,2
 obh,1
+cottag,1
 malori,1
 car,9
 prepar,27
@@ -1528,7 +1541,6 @@ wayyyi,1
 critic,3
 o,3
 pond,1
-candi,1
 chic,5
 articl,1
 newcom,1
@@ -1579,7 +1591,7 @@ such,31
 suck,5
 grow,2
 man,12
-120,1
+26,2
 stress,2
 cod,2
 crepe,14
@@ -1600,6 +1612,7 @@ so,368
 african,4
 basket,1
 tall,2
+p,2
 bunk,1
 talk,14
 outlet,3
@@ -1611,6 +1624,7 @@ lighter,1
 schwartz,13
 anticip,3
 horrifi,1
+ohashi,1
 haircut,1
 brais,5
 kong,5
@@ -1642,7 +1656,6 @@ parmesan,3
 mail,1
 mediocr,11
 main,20
-don,2
 nom,1
 non,7
 ahi,1
@@ -1713,6 +1726,7 @@ waitstaff,3
 space,16
 blt,2
 DR,1
+marri,1
 lad,2
 stool,2
 pamela,1
@@ -1750,7 +1764,6 @@ sabor,1
 badli,1
 waiter,30
 yup,2
-liam,1
 refus,2
 honest,5
 ryan,1
@@ -1775,6 +1788,7 @@ hashbrown,3
 one,269
 drizzl,1
 long,47
+appoint,2
 spanish,2
 vote,1
 array,4
@@ -1800,6 +1814,7 @@ silenc,1
 32oz,1
 circl,2
 Ri,1
+ps,1
 masala,7
 white,19
 conveni,15
@@ -1859,6 +1874,7 @@ nicer,3
 sal,2
 slaw,3
 pro,2
+insitut,1
 greyhound,1
 ani,65
 alley,2
@@ -1868,6 +1884,7 @@ threw,5
 say,86
 medium,13
 shadysid,1
+sbarro,1
 deliv,21
 allen,1
 breakfast,72
@@ -1913,7 +1930,6 @@ pair,9
 neatli,2
 impromptu,1
 thou,1
-kouign,1
 icon,1
 summerlin,1
 lawn,2
@@ -1927,6 +1943,7 @@ seafood,13
 later,14
 drive,26
 wing,35
+desk,1
 macaroon,3
 glutton,1
 salt,8
@@ -1942,7 +1959,7 @@ german,1
 greekfest,1
 cheap,36
 reheat,3
-spar,1
+wok,1
 bright,5
 perpetu,1
 sweetey,1
@@ -1973,13 +1990,13 @@ stain,3
 offici,1
 unexcept,1
 pumpkin,1
+woman,4
 ventano,2
 pastrami,3
 variou,6
 get,247
 H,1
 jazz,1
-cheddar,1
 grandfath,1
 obviou,1
 state,5
@@ -2020,7 +2037,7 @@ proxim,2
 abacu,2
 goug,1
 honesti,2
-insitut,1
+reinterpret,1
 reserv,27
 cauliflow,4
 sport,9
@@ -2053,7 +2070,7 @@ boul,1
 fastfood,1
 smoothi,5
 nd,1
-beyond,5
+jo,1
 spare,3
 invite,1
 scotiabank,1
@@ -2061,6 +2078,7 @@ coma,1
 quizno,3
 tub,1
 come,183
+hudson,1
 unnecessari,1
 courtyard,1
 786,1
@@ -2072,10 +2090,8 @@ region,2
 quiet,8
 restroom,7
 s,7
-jo,1
 tout,1
 aura,1
-rewind,1
 awkward,2
 improv,5
 overpay,1
@@ -2096,7 +2112,6 @@ poo,1
 twin,4
 featur,3
 65,2
-incomplet,1
 comeback,1
 cancel,2
 spicer,1
@@ -2157,7 +2172,7 @@ mount,1
 chinatown,1
 cash,10
 imperi,1
-syrup,2
+caledonian,1
 trick,4
 roma,1
 cannot,8
@@ -2168,7 +2183,6 @@ spotlight,1
 ambienc,11
 ive,135
 anytim,2
-celiac,1
 grenadin,1
 advantag,3
 creamier,1
@@ -2186,7 +2200,7 @@ nearbi,8
 paratha,2
 everyday,1
 knda,1
-imho,1
+measur,1
 par,4
 dhaal,2
 author,1
@@ -2209,7 +2223,6 @@ pao,1
 week,35
 oil,9
 pari,2
-bream,1
 closest,1
 I,1942
 nest,1
@@ -2256,7 +2269,7 @@ If,84
 venu,7
 outdoor,8
 fave,5
-gooooood,1
+bream,1
 execut,2
 poach,1
 money,25
@@ -2285,9 +2298,10 @@ except,16
 littl,126
 silver,1
 blog,1
+scroll,1
 pile,3
 4,50
-sampler,2
+repli,2
 rost,1
 83rd,1
 devrait,1
@@ -2318,11 +2332,9 @@ clam,3
 blackberri,1
 stranger,1
 cleanli,2
-mont,1
 fajita,1
 zucchini,1
 server,103
-handmad,2
 oxtail,1
 republ,1
 t,4
@@ -2343,7 +2355,6 @@ butt,3
 laotian,2
 lobster,12
 refresh,4
-reinterpret,1
 pushi,1
 intend,1
 72,1
@@ -2401,7 +2412,7 @@ og,1
 of,1083
 lorain,1
 chon,2
-shrimp,47
+side,95
 cring,1
 pistachio,2
 degre,4
@@ -2423,7 +2434,6 @@ coupon,7
 youd,5
 suicid,2
 overpow,3
-flash,1
 strip,18
 youv,7
 dank,1
@@ -2556,9 +2566,11 @@ reduc,2
 victori,2
 downfal,1
 wife,38
+ador,1
 mud,1
 wifi,4
 descript,2
+erica,1
 cabbag,2
 mash,6
 groov,1
@@ -2612,7 +2624,7 @@ instruct,1
 tb,1
 coz,1
 introduc,4
-bubbi,1
+beyond,5
 washroom,2
 sound,11
 yr,1
@@ -2635,7 +2647,6 @@ ticket,3
 horseback,1
 ramen,12
 strang,4
-kasbah,1
 common,4
 sant,1
 heaven,7
@@ -2662,10 +2673,10 @@ tea,42
 applesauc,1
 sync,1
 kolsch,1
+subtl,1
 past,15
 burger,115
 rate,12
-caffein,2
 design,5
 arnold,1
 pass,13
@@ -2683,6 +2694,7 @@ sun,9
 section,6
 disorgan,1
 crust,21
+liam,1
 overload,1
 mesquit,1
 pluse,1
@@ -2721,6 +2733,7 @@ ahead,15
 vegetarian,17
 guacamol,4
 whine,1
+rewind,1
 observ,1
 prior,4
 amount,27
@@ -2733,7 +2746,7 @@ fatten,2
 creepi,1
 soonish,1
 chunki,1
-digniti,1
+flash,1
 depart,2
 mijon,1
 declin,2
@@ -2741,6 +2754,7 @@ bustl,2
 elgin,1
 young,8
 put,41
+handmad,2
 inappropri,1
 famili,44
 kiltlift,1
@@ -2799,6 +2813,7 @@ hour,67
 hous,33
 cooler,2
 malt,1
+II,1
 remain,5
 portugues,2
 SO,5
@@ -2823,7 +2838,6 @@ accept,4
 allegro,1
 unassum,1
 pajama,1
-firm,1
 ave,1
 sharp,1
 dress,23
@@ -2861,7 +2875,6 @@ blacken,3
 sneak,1
 reflect,1
 brochett,1
-whilst,2
 goopi,1
 preoccupi,1
 fo,1
@@ -2902,6 +2915,7 @@ held,3
 isnt,28
 paper,8
 through,23
+chowder,1
 hell,5
 perhap,7
 brie,3
@@ -2909,7 +2923,7 @@ jordann,1
 24,3
 25,11
 style,38
-27,1
+pt,1
 20,27
 surtout,1
 22,5
@@ -2929,6 +2943,7 @@ latk,2
 catfish,1
 fool,1
 recip,1
+imho,1
 good,572
 return,56
 yo,2
@@ -2980,7 +2995,6 @@ realli,203
 heavi,6
 finish,29
 expect,52
-realis,1
 mistakenli,1
 http,3
 energi,3
@@ -3034,12 +3048,12 @@ betwixt,1
 bash,1
 basi,2
 El,2
-farmhous,1
 barbara,1
 spinach,3
 rack,3
 benedict,2
 american,14
+spar,1
 kung,2
 w,9
 Ez,1
@@ -3213,7 +3227,7 @@ visibl,1
 ugh,3
 golf,2
 ridicul,5
-shooter,1
+gold,5
 summer,9
 sangria,3
 fond,2
@@ -3326,14 +3340,14 @@ leg,5
 emeril,3
 woo,2
 creme,6
-sbarro,1
+unsanitari,1
 delect,3
 raunchier,1
 celebratori,1
 experi,92
 nope,3
 compliment,5
-meal,116
+piss,2
 altern,5
 signatur,3
 latin,1
@@ -3343,6 +3357,7 @@ numer,1
 rubberi,3
 complement,2
 sole,1
+cheddar,1
 isol,1
 leek,1
 preorder,1
@@ -3396,7 +3411,7 @@ identif,1
 pepperi,1
 devil,4
 coleslaw,12
-pt,1
+sparkl,1
 stingiest,1
 panera,3
 humung,1
@@ -3412,11 +3427,10 @@ brick,4
 tiramisu,2
 po,1
 pm,3
-ruth,1
+firm,1
 ME,1
 sweetheart,1
 flight,4
-architectur,2
 boy,11
 fire,9
 reassur,1
@@ -3437,7 +3451,6 @@ educ,1
 duke,1
 invit,6
 bruschetta,2
-appoint,2
 utmost,1
 look,111
 hostess,14
@@ -3500,8 +3513,8 @@ grand,4
 9,6
 terrac,1
 horton,1
-57,1
 higher,3
+steer,1
 squeez,2
 crunki,1
 bon,2
@@ -3584,7 +3597,7 @@ persuas,1
 unglaublich,1
 danki,5
 liqueur,1
-ugli,1
+farmhous,1
 On,18
 complaint,13
 Ok,3
@@ -3596,7 +3609,7 @@ game,23
 quest,2
 biz,1
 abound,1
-semolina,1
+incomplet,1
 thoroughli,2
 resid,1
 bit,73
@@ -3620,7 +3633,6 @@ buff,1
 OR,1
 downstair,2
 encount,1
-kylo,1
 mighti,1
 often,31
 urgenc,2
@@ -3646,6 +3658,7 @@ lamin,1
 trattoria,1
 pet,1
 mobil,1
+land,3
 pep,1
 per,10
 prop,1
@@ -3665,7 +3678,6 @@ bf,1
 kah,1
 run,21
 08,1
-purist,1
 rum,1
 rub,3
 reach,5
@@ -3695,10 +3707,9 @@ spit,1
 goodi,1
 trivisonno,1
 wanna,1
-blossom,1
+architectur,2
 block,1
 restuar,2
-chese,1
 miracl,1
 univers,1
 clinton,1
@@ -3708,13 +3719,13 @@ dude,4
 into,52
 within,4
 tofu,5
+chalkboard,2
 upgrad,1
 fluster,1
 nevertheless,1
 jimmi,3
 slovak,1
 frog,1
-prepackag,1
 kielbasa,1
 updat,5
 aburi,3
@@ -3733,7 +3744,6 @@ pokito,1
 forward,10
 opent,1
 procedur,1
-clientel,1
 tastiest,2
 himself,1
 repeatedli,1
@@ -3783,6 +3793,7 @@ m,1
 cleveland,9
 chan,1
 chao,2
+realis,1
 hassl,2
 char,3
 hangri,1
@@ -3792,6 +3803,7 @@ chat,2
 guarante,1
 cafe,27
 kalita,1
+shitti,2
 rainbow,5
 lemon,6
 peach,5
@@ -3811,10 +3823,10 @@ manhattan,2
 mock,1
 tart,4
 draw,3
+shooter,1
 mustard,6
 freez,5
 kiosk,2
-unsanitari,1
 AM,2
 figurin,1
 02,1
@@ -3857,7 +3869,7 @@ partial,1
 edg,1
 beachcliff,1
 scratch,2
-erica,1
+mont,1
 munchi,1
 steve,2
 gf,2
@@ -3870,7 +3882,7 @@ vintag,1
 gambl,1
 culinari,5
 privat,5
-gold,5
+secur,1
 turkish,2
 peanut,6
 elsewher,4
@@ -3884,7 +3896,6 @@ tonkatsu,1
 passion,3
 NY,3
 sent,9
-yummier,1
 abendbetrieb,1
 random,4
 garden,8
@@ -3967,6 +3978,7 @@ mcmurray,1
 chose,6
 absolut,38
 sexi,3
+syrup,2
 blink,1
 bodi,1
 pump,1
@@ -4032,6 +4044,7 @@ Fe,1
 crab,26
 lesli,2
 panel,1
+spoon,2
 oyako,2
 sort,13
 clever,1
@@ -4048,6 +4061,7 @@ sore,1
 train,11
 popper,2
 templ,1
+blossom,1
 unattent,1
 central,2
 confi,1
@@ -4083,10 +4097,12 @@ tab,1
 patron,9
 do,105
 process,5
+southwest,1
 loch,1
 slim,1
 halloween,3
 loco,3
+celiac,1
 rapt,1
 high,35
 boney,1
@@ -4098,14 +4114,13 @@ tam,1
 blvd,4
 onlin,5
 tan,1
-chorizo,6
+shrimp,47
 skirt,1
 tai,1
 taj,1
 everywher,4
 chop,5
 sip,5
-chalkboard,2
 siu,1
 sit,37
 vibe,9
@@ -4139,10 +4154,8 @@ taco,51
 tier,3
 marrow,2
 shumai,1
-julio,1
 marriott,1
 tomato,19
-26,2
 hker,1
 honestli,8
 classi,5
@@ -4158,7 +4171,6 @@ unaccept,1
 agenda,1
 takeaway,1
 cattl,1
-p,2
 cutleri,1
 longest,2
 refri,1
@@ -4166,7 +4178,6 @@ creation,2
 thigh,1
 movi,2
 futo,1
-ohashi,1
 move,22
 petco,1
 brandan,1
@@ -4187,8 +4198,6 @@ condiment,1
 birthplac,2
 till,3
 byw,1
-desk,1
-grandmoth,1
 walnut,6
 restrain,1
 soulless,1
@@ -4199,6 +4208,7 @@ decad,1
 bye,1
 jukebox,1
 rabo,1
+don,2
 dad,2
 baguett,2
 pure,2
@@ -4216,6 +4226,7 @@ snake,1
 euphor,1
 front,15
 day,65
+steep,2
 awhatuke,1
 10pm,3
 toddler,1
@@ -4244,7 +4255,6 @@ hoisin,3
 sandi,2
 consum,1
 elus,1
-collag,1
 our,273
 lentil,7
 artichok,6
@@ -4272,9 +4282,7 @@ stun,2
 red,18
 obsess,2
 chariti,1
-lorrain,1
 await,2
-baysid,2
 jessica,1
 insid,33
 utensil,1
@@ -4407,9 +4415,7 @@ element,2
 border,2
 sunset,1
 coquin,1
-mgm,4
 screw,5
-southwest,1
 afraid,2
 smallest,1
 soak,1
@@ -4510,6 +4516,7 @@ hope,28
 meant,3
 workin,1
 skimp,2
+ugli,1
 pull,16
 beat,8
 midnight,1
@@ -4529,21 +4536,18 @@ ghetto,1
 smash,1
 shu,4
 organ,3
-woman,4
+whilst,2
 cafeteria,2
 jasmin,1
 chickpea,1
 tomatoey,1
-confit,1
 whoohoo,1
 veget,17
 stuff,20
 she,109
 contain,4
-repli,2
 ohio,2
 grab,15
-piss,2
 11am,2
 view,7
 Ps,1
@@ -4596,8 +4600,9 @@ habanero,2
 snappi,1
 job,14
 entir,15
-measur,1
+chorizo,6
 spoil,2
+kasbah,1
 monarchi,1
 cloudi,2
 legit,3
@@ -4740,14 +4745,14 @@ sweeti,1
 pho,18
 alot,2
 asianish,1
-pgh,1
+overcrowd,1
 drink,104
 upon,9
 booz,3
 coffe,37
 pleasantli,9
 brew,5
-II,1
+graini,2
 exot,2
 student,1
 countri,6
@@ -4769,7 +4774,6 @@ hoisen,1
 exampl,1
 english,3
 con,1
-spoon,2
 latest,1
 rocker,1
 BF,1
@@ -4807,8 +4811,8 @@ teriyaki,6
 By,2
 kick,14
 raven,1
-overcrowd,1
 sonic,1
+revolv,1
 royalti,1
 godfath,2
 rememb,24
@@ -4847,14 +4851,13 @@ soft,25
 page,1
 heel,1
 italian,25
-passer,1
 lumpia,1
 revers,1
 specifi,1
 incent,1
 olivani,1
 regist,5
-caledonian,1
+clientel,1
 church,5
 osmow,2
 homefri,1
@@ -4866,13 +4869,12 @@ smoothli,2
 proper,1
 home,50
 meatloaf,2
-wok,1
 transport,1
 shey,1
 est,1
 monday,9
 lead,4
-steep,2
+prepackag,1
 hoarder,1
 avoid,14
 lean,2
@@ -4953,7 +4955,6 @@ pictur,8
 museum,1
 soundli,1
 proprietor,1
-marri,1
 NC,1
 appl,10
 downgrad,1
@@ -5064,7 +5065,6 @@ plate,36
 sooooo,2
 lesson,1
 vega,54
-ps,1
 shirley,1
 stay,22
 ole,1

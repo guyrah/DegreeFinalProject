@@ -2,6 +2,7 @@ import re
 from stemming.porter2 import stem
 import simplejson as json
 from nltk.stem.porter import *
+from config import vectorMode
 
 """
 initialize items once
@@ -66,6 +67,36 @@ def text_to_hot_vector(text, vocabulary):
 
     return hot_vector
 
+def text_to_binary_vector(text, vocabulary):
+    binary_vector = [0] * len(vocabulary)
+    word_counter = dict()
+
+    for word in str(remove_non_letters(text)).split():
+        word = stem_word(word)
+        word_counter[word] = word_counter.get(word, 0) + 1
+
+    for word, value in word_counter.iteritems():
+        if vocabulary.has_key(word):
+            if value > 0:
+                binary_vector[vocabulary[word].get_index()] = 1
+            else:
+                binary_vector[vocabulary[word].get_index()] = 0
+
+    return binary_vector
+
+def text_to_count_vector(text, vocabulary):
+    count_vector = [0] * len(vocabulary)
+    word_counter = dict()
+
+    for word in str(remove_non_letters(text)).split():
+        word = stem_word(word)
+        word_counter[word] = word_counter.get(word, 0) + 1
+
+    for word, value in word_counter.iteritems():
+        if vocabulary.has_key(word):
+            count_vector[vocabulary[word].get_index()] = value
+
+    return count_vector
 
 def create_vocabulary(src_file_path, dst_file_path):
     exceptions = 0
@@ -118,24 +149,37 @@ def json_to_csv(src_path, tgt_path):
                 tgt_file.write(','.join(current_fields) + '\n')
 
 
-def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary):
+def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary, mode):
     """
        fields = ['review_id', 'qualityrank','quality_of_service_rank',\
                  'fast_rank','price_rank','big_dish_rank',\
                  'value_for_money_rank','clean_rank',\
                  'good_for_vegan_rank','good_for_meat_rank']
     """
-    with open(src_path,'r') as src_file:
-        data = list()
-        target = list()
-        # Runns on each line - which supposed to be a doc
-        for line in src_file:
-            current_json = json.loads(line)
-            if current_json.has_key(target_field):
-                data.append(text_to_hot_vector(current_json[data_field], vocabulary))
-                target.append(int(current_json[target_field]))
 
-        return data, target
+    if (mode in vectorMode.modes):
+
+        with open(src_path,'r') as src_file:
+            data = list()
+            target = list()
+            # Runs on each line - which supposed to be a doc
+            for line in src_file:
+                current_json = json.loads(line)
+                if current_json.has_key(target_field):
+                    vector = 0
+                    if(mode == vectorMode.tfidf ):
+                        vector = text_to_hot_vector(current_json[data_field], vocabulary)
+                    elif(mode == vectorMode.binary ):
+                        vector = text_to_binary_vector(current_json[data_field], vocabulary)
+                    elif (mode == vectorMode.count ):
+                        vector = text_to_count_vector(current_json[data_field], vocabulary)
+
+                    data.append(vector)
+                    target.append(int(current_json[target_field]))
+
+            return data, target
+    else:
+        raise ("Sunny - Invalid mode chosen.")
 
 
 def json_stats_counter(src_path):
