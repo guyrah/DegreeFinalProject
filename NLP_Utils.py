@@ -67,7 +67,7 @@ def text_to_hot_vector(text, vocabulary):
     return hot_vector
 
 
-def create_vocabulary(src_file_path, dst_file_path):
+def create_vocabulary(src_file_path, dst_file_path, repetitions_thershold=-1):
     exceptions = 0
 
     with open(src_file_path,'r') as file:
@@ -88,12 +88,13 @@ def create_vocabulary(src_file_path, dst_file_path):
 
             counter += 1
 
-            if counter > 1000:
-                break
-
     with open(dst_file_path, 'w') as file:
         for k, v in word_counter.items():
-            file.write(k + ',' + str(v) + '\n')
+            if repetitions_thershold == -1:
+                file.write(k + ',' + str(v) + '\n')
+            else:
+                if v > repetitions_thershold:
+                    file.write(k + ',' + str(v) + '\n')
 
     print 'number of exceptions: ', exceptions
 
