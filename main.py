@@ -5,39 +5,33 @@ from Logger import Logger
 from config import *
 #region Config:
 
-REFRESH_TAGGED_DATA = False
-MONGO_URL = 'mongodb://193.106.55.77:27017'
-DATA_PATH = "tagged_data.json"
-VOCABULARY_PATH = 'vocabulary.txt'
-DATA_FIELD = 'text'
-TESTSET_SIZE = 10
+
 
 #endregion
 
 def refreshTaggedData():
-    Mongo_Access.get_tagged_data(MONGO_URL, DATA_PATH)
-    NLP_Utils.json_stats_counter(DATA_PATH)
-    NLP_Utils.create_vocabulary(DATA_PATH, VOCABULARY_PATH)
+    Mongo_Access.get_tagged_data(config.mongoDbURL, config.dataSetFilePath)
+    NLP_Utils.json_stats_counter(config.dataSetFilePath)
+    NLP_Utils.create_vocabulary(config.dataSetFilePath, config.VOCABULARY_PATH)
 
 
 def __main__():
+
     Logger.log_info("Starting script...")
 
-    if REFRESH_TAGGED_DATA:
+    # refreshing tagged data file if value set to true in config file
+    if config.refreshTaggedData:
         print "Refreshing tagged data..."
         refreshTaggedData()
         print "Finished refreshing tagged data"
     else:
         print "Not refreshing tagged data"
 
-
-    for mode in [vectorMode.tfidf]:
+    for mode in [vectorMode.binary]:
         Logger.log_info("mode: " + mode)
-        train.train_qualityrank(DATA_PATH, DATA_FIELD, VOCABULARY_PATH, TESTSET_SIZE, mode)
+        train.train_qualityrank(config.dataSetFilePath, config.dataFieldName, config.VOCABULARY_PATH, mode)
 
-    print "Finished"
-
-
+        Logger.log_info("Finished")
 
 
 

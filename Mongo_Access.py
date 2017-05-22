@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from bson.json_util import dumps
+from config import *
 
 
 def get_tagged_data(mongo_url, tgt_path):

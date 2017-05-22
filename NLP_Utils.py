@@ -33,6 +33,11 @@ class VocabulrayItem:
     def get_freq(self):
         return self.freq
 
+    def toString(self):
+        string = "index = " + str(self.index) + ", freq = " + str(self.freq)
+        string = string.strip('\n')
+        return string
+
 """
 Gets path of vocabulary file and returns a vocabulary item
 """
@@ -54,9 +59,7 @@ def text_to_hot_vector(text, vocabulary):
     word_counter = dict()
     words_not_in_vocabulary = 0
 
-    for word in str(remove_non_letters(text)).split():
-        word = stem_word(word)
-        word_counter[word] = word_counter.get(word, 0) + 1
+    word_counter = calcWordCountDict(text)
 
     for word, value in word_counter.iteritems():
         if vocabulary.has_key(word):
@@ -67,13 +70,15 @@ def text_to_hot_vector(text, vocabulary):
 
     return hot_vector
 
+"""
+
+Written by: Sunny 
+"""
 def text_to_binary_vector(text, vocabulary):
     binary_vector = [0] * len(vocabulary)
     word_counter = dict()
 
-    for word in str(remove_non_letters(text)).split():
-        word = stem_word(word)
-        word_counter[word] = word_counter.get(word, 0) + 1
+    word_counter = calcWordCountDict(text)
 
     for word, value in word_counter.iteritems():
         if vocabulary.has_key(word):
@@ -84,19 +89,35 @@ def text_to_binary_vector(text, vocabulary):
 
     return binary_vector
 
+"""
+
+Written by: Sunny 
+"""
 def text_to_count_vector(text, vocabulary):
     count_vector = [0] * len(vocabulary)
+    word_counter = dict()
+
+    word_counter = calcWordCountDict(text)
+
+    for word, value in word_counter.iteritems():
+        if vocabulary.has_key(word):
+             count_vector[vocabulary[word].get_index()] = value
+
+
+    return count_vector
+
+"""
+
+Written by: Sunny
+"""
+def calcWordCountDict(text):
     word_counter = dict()
 
     for word in str(remove_non_letters(text)).split():
         word = stem_word(word)
         word_counter[word] = word_counter.get(word, 0) + 1
 
-    for word, value in word_counter.iteritems():
-        if vocabulary.has_key(word):
-            count_vector[vocabulary[word].get_index()] = value
-
-    return count_vector
+    return word_counter
 
 def create_vocabulary(src_file_path, dst_file_path):
     exceptions = 0
@@ -139,7 +160,7 @@ def json_to_csv(src_path, tgt_path):
         with open(tgt_path, 'w') as tgt_file:
             tgt_file.write(','.join(fields) + '\n')
 
-            # Runns on each line - which supposed to be a doc
+            # Runs on each line - which supposed to be a doc
             for line in src_file:
                 current_json = json.loads(line)
                 current_fields = list()
@@ -149,7 +170,7 @@ def json_to_csv(src_path, tgt_path):
                 tgt_file.write(','.join(current_fields) + '\n')
 
 
-def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary, mode):
+def prepare_tagged_data_to_train(datasetFilePath, data_field, target_field, vocabulary, mode):
     """
        fields = ['review_id', 'qualityrank','quality_of_service_rank',\
                  'fast_rank','price_rank','big_dish_rank',\
@@ -159,27 +180,38 @@ def prepare_tagged_data_to_train(src_path, data_field, target_field, vocabulary,
 
     if (mode in vectorMode.modes):
 
-        with open(src_path,'r') as src_file:
+        with open(datasetFilePath, 'r') as datasetFile:
             data = list()
             target = list()
-            # Runs on each line - which supposed to be a doc
-            for line in src_file:
-                current_json = json.loads(line)
-                if current_json.has_key(target_field):
-                    vector = 0
-                    if(mode == vectorMode.tfidf ):
-                        vector = text_to_hot_vector(current_json[data_field], vocabulary)
-                    elif(mode == vectorMode.binary ):
-                        vector = text_to_binary_vector(current_json[data_field], vocabulary)
-                    elif (mode == vectorMode.count ):
-                        vector = text_to_count_vector(current_json[data_field], vocabulary)
 
+            # Runs on each line - which supposed to be a doc
+            for line in datasetFile:
+
+                jsonCurrentSample = json.loads(line)
+                if jsonCurrentSample.has_key(target_field):
+
+                    vector = getVector(data_field, jsonCurrentSample, mode, vocabulary)
                     data.append(vector)
-                    target.append(int(current_json[target_field]))
+                    target.append(int(jsonCurrentSample[target_field]))
 
             return data, target
     else:
         raise ("Sunny - Invalid mode chosen.")
+
+
+"""
+getting the correct vector according to the mode requested
+"""
+def getVector(data_field, jsonCurrentSample, mode, vocabulary):
+
+    vector = []
+    if (mode == vectorMode.tfidf):
+        vector = text_to_hot_vector(jsonCurrentSample[data_field], vocabulary)
+    elif (mode == vectorMode.binary):
+        vector = text_to_binary_vector(jsonCurrentSample[data_field], vocabulary)
+    elif (mode == vectorMode.count):
+        vector = text_to_count_vector(jsonCurrentSample[data_field], vocabulary)
+    return vector
 
 
 def json_stats_counter(src_path):

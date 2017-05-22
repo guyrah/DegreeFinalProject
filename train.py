@@ -3,28 +3,59 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 import NLP_Utils
 from Logger import Logger
+from config import *
 import pydotplus
 from config import vectorMode
 
+def combineLabels(dataLabels, srcLabel, dstLabel):
 
-def train_qualityrank(data_path, data_field, vocabulary_path, testset_size, mode):
+    newDataLabels = list()
+
+    for originalLabel in dataLabels:
+        if originalLabel == srcLabel:
+            newDataLabels.append(dstLabel)
+        else:
+            newDataLabels.append(originalLabel)
+    return newDataLabels
+
+def removeLabel(dataLabels, dataSamples,  label):
+    newLabels = list()
+    newDataSamples = list()
+
+    for i in range(0,len(dataLabels)):
+        if dataLabels[i] != label:
+            newLabels.append(dataLabels[i])
+            newDataSamples.append(dataSamples[i])
+
+    return newLabels, newDataSamples
+
+def train_qualityrank(data_path, data_field, vocabulary_path, mode):
 
     target_field = "qualityrank"
 
     vocabulary   = NLP_Utils.read_vocabulary(vocabulary_path)
 
-    data, target = NLP_Utils.prepare_tagged_data_to_train(src_path=data_path,
-                                 data_field=data_field,
-                                 target_field=target_field,
-                                 vocabulary=vocabulary,
-                                 mode=mode)
+    data, target = NLP_Utils.prepare_tagged_data_to_train(datasetFilePath=data_path,
+                                                          data_field=data_field,
+                                                          target_field=target_field,
+                                                          vocabulary=vocabulary,
+                                                          mode=mode)
     #data, target = np.array(data), np.array(target)
 
+    Logger.log_debug("Target labels:")
+    Logger.log_debug(target)
+    Logger.log_debug("Combining labels 2 and 3:")
+    target = combineLabels(target, 2, 3)
+    Logger.log_info("Combined labels 2 and 3")
+    Logger.log_debug(target)
 
-    train_data = data[:-testset_size]
-    train_target = target[:-testset_size]
-    test_data = data[-testset_size:]
-    test_target = target[-testset_size:]
+    #Logger.log_info("Removing label: 0")
+    #target, data = removeLabel(target, data, 0)
+
+    train_data = data[: -config.testSetSize]
+    train_target = target[:-config.testSetSize]
+    test_data = data[-config.testSetSize:]
+    test_target = target[-config.testSetSize:]
 
     a = dict()
     for i in train_target:
