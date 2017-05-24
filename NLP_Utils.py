@@ -59,7 +59,7 @@ def text_to_hot_vector(text, vocabulary):
 
     for word, value in word_counter.iteritems():
         if vocabulary.has_key(word):
-            hot_vector[vocabulary[word].get_index()] = float(word_counter[word]) / float(vocabulary[word].get_freq())
+            hot_vector[vocabulary[word].get_index()] = float(word_counter[word]) #/ float(vocabulary[word].get_freq())
         else:
             words_not_in_vocabulary += 1
 

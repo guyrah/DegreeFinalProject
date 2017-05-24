@@ -20,6 +20,8 @@ from sklearn.svm import SVC
 
 
 def get_surrounding_words(text, core_words):
+    reps = 0
+
     surrounding_words = []
     text = str(NLP_Utils.remove_non_letters(text)).split()
 
@@ -27,9 +29,10 @@ def get_surrounding_words(text, core_words):
         word = NLP_Utils.stem_word(word)
 
         if word in core_words:
+            reps += 1
             surrounding_words.extend(text[i-3:i+7])
 
-    return surrounding_words
+    return " ".join(surrounding_words), reps
 
 def get_best_words(clf, vocabulary, number_of_words = 10):
     best_words = []
@@ -68,19 +71,24 @@ def print_results(target, predict):
 
         print str(i) + ':', str(row_correct / float(row_correct+row_error)*100) + '%'
 
-def service_prepare_tagged_data_to_train(src_path,
+def service_prepare_tagged_data_to_train_from_path(src_path,
                                          data_field,
                                          target_field,
                                          vocabulary,
                                          class_map=None,
-                                         balance_classes=True,
-                                         randomize=False):
+                                         balance_classes=False,
+                                         randomize=False,
+                                                   core_words=None):
     """
        fields = ['review_id', 'qualityrank','quality_of_service_rank',\
                  'fast_rank','price_rank','big_dish_rank',\
                  'value_for_money_rank','clean_rank',\
                  'good_for_vegan_rank','good_for_meat_rank']
     """
+
+    if core_words is not None:
+        print 'Getting surrounding words'
+
     with open(src_path, 'r') as src_file:
         data_dict = {}
 
@@ -89,25 +97,32 @@ def service_prepare_tagged_data_to_train(src_path,
         target = list()
         # Runns on each line - which supposed to be a doc
         for line in src_file:
+            add_line = False
             current_json = json.loads(line)
             if current_json.has_key(target_field):
                 # If no filter is asked
                 if (class_map == None):
-                    data_dict[class_map[int(current_json[target_field])]] = data_dict.get(
-                        class_map[int(current_json[target_field])], list())
-                    data_dict[class_map[int(current_json[target_field])]].append(
-                        NLP_Utils.text_to_hot_vector(current_json[data_field], vocabulary))
+                    add_line = True
                 # If filter is needed
                 else:
                     # Check if json is valid according to filter
                     if (int(current_json[target_field]) in class_map):
-                        data_dict[class_map[int(current_json[target_field])]] = data_dict.get(
-                            class_map[int(current_json[target_field])], list())
-                        data_dict[class_map[int(current_json[target_field])]].append(
-                            NLP_Utils.text_to_hot_vector(current_json[data_field], vocabulary))
+                        add_line = True
                     # If filtered a json
                     else:
                         filtered_count += 1
+
+            if add_line:
+                data_dict[class_map[int(current_json[target_field])]] = data_dict.get(
+                    class_map[int(current_json[target_field])], list())
+                if core_words is None:
+                    data_to_add = NLP_Utils.text_to_hot_vector(current_json[data_field], vocabulary)
+                else:
+                    text, reps = get_surrounding_words(current_json[data_field], core_words)
+                    data_to_add = NLP_Utils.text_to_hot_vector(text, vocabulary)
+                    data_to_add.append(reps)
+
+                data_dict[class_map[int(current_json[target_field])]].append(data_to_add)
 
         if balance_classes:
             # gets the class with the least samples
@@ -134,14 +149,14 @@ def service_prepare_tagged_data_to_train(src_path,
 
         print 'filtered: ', filtered_count
         return data, target
-
-sample = "One of my favorite dining spots in Toronto.  I've tried most of the menu items--the crab cakes are so-so too much filler not enough crab but the steak frites and calamari are excellent.  Pad Thai is ok but can be too sweet depending on who is making it.  Service is brisk and efficient.  Summer patio area can be unbearably hot at time it would be great if they could install some fans in the patio area."
 vocabulary = NLP_Utils.read_vocabulary(vocabulary_path)
+'''
+sample = "One of my favorite dining spots in Toronto.  I've tried most of the menu items--the crab cakes are so-so too much filler not enough crab but the steak frites and calamari are excellent.  Pad Thai is ok but can be too sweet depending on who is making it.  Service is brisk and efficient.  Summer patio area can be unbearably hot at time it would be great if they could install some fans in the patio area."
 class_map = {0: 0,
              1: 1,
              2: 1,
              3: 1}
-data, target = service_prepare_tagged_data_to_train(src_path=data_path,
+data, target = service_prepare_tagged_data_to_train_from_path(src_path=data_path,
                                                     data_field=data_field,
                                                     target_field=target_field,
                                                     vocabulary=vocabulary,
@@ -150,17 +165,34 @@ data, target = service_prepare_tagged_data_to_train(src_path=data_path,
                                                     randomize=False)
 
 clf = tree.DecisionTreeClassifier(max_depth=6)
-# clf = GaussianNB()
-# clf = SVC(kernel='poly', degree=3, C=10.0)
-# clf = RandomForestClassifier(max_depth=6)
-
-#predict = cross_val_predict(clf, data, target, cv=3)
-#print_results(target, predict)
-
 clf.fit(data, target)
 service_words = get_best_words(clf, vocabulary=vocabulary)
-surrounding_words = get_surrounding_words(sample, service_words)
-print service_words
+'''
+class_map = {0: 0,
+             1: 1,
+             #2: 2,
+             3: 3}
+
+data, target = service_prepare_tagged_data_to_train_from_path(src_path=data_path,
+                                                    data_field=data_field,
+                                                    target_field=target_field,
+                                                    vocabulary=vocabulary,
+                                                    class_map=class_map,
+                                                    balance_classes=False,
+                                                    randomize=False,
+                                                              core_words=None)
+
+clf = tree.DecisionTreeClassifier(max_depth=6)
+clf.fit(data, target)
+clf = SVC(kernel='linear', degree=3)
+# clf = GaussianNB()
+# clf = RandomForestClassifier(max_depth=6)
+
+predict = cross_val_predict(clf, data, target, cv=3)
+print_results(target, predict)
+
+#surrounding_words = get_surrounding_words(sample, service_words)
+#print service_words
 dot_data = tree.export_graphviz(clf, out_file=None)
 graph = pydotplus.graph_from_dot_data(dot_data)
 graph.write_pdf('decision_tree.pdf')
