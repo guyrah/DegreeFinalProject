@@ -19,3 +19,17 @@ with open('tagged_data.txt', 'r') as file:
 actions.refresh_vocabulary()
 
 #Mongo_Access.get_sequences('mongodb://193.106.55.77:27017')
+
+
+def a(funcs, *args):
+    for i in funcs:
+        i(*args)
+
+def mul(a, b):
+    print a*b
+
+def sum(a, b):
+    print a+b
+
+a([mul, sum], 3,4)
+#a(sum, 3,5)
