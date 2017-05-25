@@ -16,5 +16,6 @@ feature_extraction_config = {
     'text_to_vector_vocabulary': text_to_vector_vocabulary
 }
 
-
-vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='service_best_words.txt', number_of_words=10, config=feature_extraction_config)
+vocabularies.create_words_polarity_vocabulary('positive-words_raw.txt', 'negative-words_raw.txt', 'polarity_words_vocabulary.txt')
+a = vocabularies.read_polarity_vocabulary('polarity_words_vocabulary.txt')
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='service_best_words.txt', number_of_words=10, config=feature_extraction_config)

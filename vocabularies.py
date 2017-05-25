@@ -121,3 +121,29 @@ def create_best_words_list(data_path, data_field, target_field, save_path, confi
     with open(save_path, 'w') as file:
         for value, i in c:
             file.write(voc_list[i] + ',' + str(value) + '\n')
+
+
+def read_polarity_vocabulary(path):
+    voc = dict()
+    with open(path) as file:
+        for line in file:
+            k,v = line.split(',')
+            voc[k] = int(v)
+
+    return voc
+
+
+def create_words_polarity_vocabulary(positive_path, negative_path, tgt_path):
+    final_list = dict()
+
+    with open(positive_path) as pos_file:
+        for line in pos_file:
+            final_list[NLP_Utils.stem_word(line.rstrip('\n'))] = 1
+
+    with open(negative_path) as neg_file:
+        for line in neg_file:
+            final_list[NLP_Utils.stem_word(line.rstrip('\n'))] = -1
+
+    with open(tgt_path, 'w') as tgt_file:
+        for k,v in final_list.iteritems():
+            tgt_file.write(k + ',' + str(v) + '\n')

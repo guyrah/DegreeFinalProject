@@ -24,14 +24,20 @@ class_map = {0: 0,
 # Prepare vocabularies
 text_to_vector_vocabulary = vocabularies.read_vocabulary('text_to_vector_vocabulary.txt')
 best_representing_words = vocabularies.read_best_words_list('service_best_words.txt')
+polarity_vocabulary = vocabularies.read_polarity_vocabulary('polarity_words_vocabulary.txt')
+
 
 feature_extraction_config = {
+    'text_to_vector_vocabulary': text_to_vector_vocabulary,
     'tf_idf_vector': False,
     'counter_vector': True,
     'binary_vector': False,
-    'surrounding_words': True,
     'best_representing_words_list': best_representing_words,
-    'text_to_vector_vocabulary': text_to_vector_vocabulary
+    'surrounding_words': True,
+    'polarity_vocabulary': polarity_vocabulary,
+    'positive_words_count': True,
+    'negative_words_count': True,
+    'polarity_count': True
 }
 
 data, target = train_model.prepare_data(src_path=data_path,

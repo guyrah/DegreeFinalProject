@@ -91,17 +91,62 @@ def get_surrounding_words(text, core_words, words_before=3, words_after=7):
     return " ".join(surrounding_words), reps
 
 
+def count_polarity_words(text, vocabulary):
+    positive = 0
+    negative = 0
+
+    text = text.split()
+
+    for word in text:
+        word = NLP_Utils.stem_word(word)
+
+        if word in vocabulary:
+            if vocabulary[word] == 1:
+                positive += 1
+            else:
+                negative += 1
+
+    return positive, negative, positive - negative
+
+
 def prepare_text(text, config):
     prepared_text = list()
 
-    if config['surrounding_words']:
-        text,reps = get_surrounding_words(text, config['best_representing_words_list'])
-        prepared_text.extend([reps])
-    if config['tf_idf_vector']:
-        prepared_text.extend(text_2_tf_idf_vector(text, config['text_to_vector_vocabulary']))
-    if config['counter_vector']:
-        prepared_text.extend(text_2_repetitions_vector(text, config['text_to_vector_vocabulary']))
-    if config['binary_vector']:
-        prepared_text.extend(text_2_binary_vector(text, config['text_to_vector_vocabulary']))
+    if config.has_key('surrounding_words'):
+        if config['surrounding_words']:
+            text,reps = get_surrounding_words(text, config['best_representing_words_list'])
+            prepared_text.extend([reps])
+
+    positive_words_count = False
+    negative_words_count = False
+    polarity_count = False
+    if config.has_key('positive_words_count'):
+        if config['positive_words_count']:
+            positive_words_count = True
+    if config.has_key('negative_words_count'):
+        if config['negative_words_count']:
+            negative_words_count = True
+    if config.has_key('polarity_count'):
+        if config['polarity_count']:
+            polarity_count = True
+    if positive_words_count or negative_words_count or polarity_count:
+        pos, neg, sum = count_polarity_words(text, config['polarity_vocabulary'])
+
+        if positive_words_count:
+            prepared_text.extend([pos])
+        if negative_words_count:
+            prepared_text.extend([neg])
+        if polarity_count:
+            prepared_text.extend([sum])
+
+    if config.has_key('tf_idf_vector'):
+        if config['tf_idf_vector']:
+            prepared_text.extend(text_2_tf_idf_vector(text, config['text_to_vector_vocabulary']))
+    if config.has_key('counter_vector'):
+        if config['counter_vector']:
+            prepared_text.extend(text_2_repetitions_vector(text, config['text_to_vector_vocabulary']))
+    if config.has_key('binary_vector'):
+        if config['binary_vector']:
+            prepared_text.extend(text_2_binary_vector(text, config['text_to_vector_vocabulary']))
 
     return prepared_text
