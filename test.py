@@ -1,35 +1,20 @@
-import actions
+import vocabularies
 
-import Mongo_Access
+data_path = 'tagged_data.json'
+data_field = 'text'
+target_field = 'quality_of_service_rank'
+# target_field = 'qualityrank'
+# target_field = 'value_for_money_rank'
+vocabulary_path = 'text_to_vector_vocabulary.txt'
+from sklearn.svm import SVC
+text_to_vector_vocabulary = vocabularies.read_vocabulary('text_to_vector_vocabulary.txt')
 
-'''
-voc = NLP_Utils.read_vocabulary('vocabulary.txt')
-
-text = "I blablabla like like this place a lot. It's a good toasted hoagie.\n\nI actually don't like a my bun exploding with meat, but as a previous poster mentioned if you do maybe you wouldn't like this place.\n\nThe inside badly needs updated though. \n\nThe staff is friendly."
-
-NLP_Utils.text_to_hot_vector(text, voc)
-'''
-'''
-a = list()
-with open('tagged_data.txt', 'r') as file:
-    for line in file:
-        a.append(loads(line))
-'''
-
-actions.refresh_vocabulary()
-
-#Mongo_Access.get_sequences('mongodb://193.106.55.77:27017')
+feature_extraction_config = {
+    'tf_idf_vector': False,
+    'counter_vector': True,
+    'binary_vector': False,
+    'text_to_vector_vocabulary': text_to_vector_vocabulary
+}
 
 
-def a(funcs, *args):
-    for i in funcs:
-        i(*args)
-
-def mul(a, b):
-    print a*b
-
-def sum(a, b):
-    print a+b
-
-a([mul, sum], 3,4)
-#a(sum, 3,5)
+vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='service_best_words.txt', number_of_words=10, config=feature_extraction_config)
