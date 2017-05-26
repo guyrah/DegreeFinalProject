@@ -147,3 +147,40 @@ def create_words_polarity_vocabulary(positive_path, negative_path, tgt_path):
     with open(tgt_path, 'w') as tgt_file:
         for k,v in final_list.iteritems():
             tgt_file.write(k + ',' + str(v) + '\n')
+
+
+def create_bi_vocabulary(src_file_path, dst_file_path, repetitions_thershold=-1):
+    exceptions = 0
+
+    with open(src_file_path,'r') as file:
+        word_counter = dict()
+        prev_word = None
+
+        counter = 1
+        #
+        for line in file:
+            line_contents = json.loads(line)
+
+            try:
+                for word in str(NLP_Utils.remove_non_letters(line_contents['text'])).split():
+                    word = NLP_Utils.stem_word(word)
+                    if prev_word is not None:
+                        word_counter[prev_word + '-' + word] = word_counter.get(prev_word + '-' + word, 0) + 1
+
+                    prev_word = word
+
+            except Exception as e:
+                print e
+                exceptions += 1
+
+            counter += 1
+
+    with open(dst_file_path, 'w') as file:
+        for k, v in word_counter.items():
+            if repetitions_thershold == -1:
+                file.write(k + ',' + str(v) + '\n')
+            else:
+                if v > repetitions_thershold:
+                    file.write(k + ',' + str(v) + '\n')
+
+    print 'number of exceptions: ', exceptions

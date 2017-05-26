@@ -9,12 +9,12 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 
 data_path = 'tagged_data.json'
 data_field = 'text'
 target_field = 'quality_of_service_rank'
-vocabulary_path = 'text_to_vector_vocabulary.txt'
-from sklearn.svm import SVC
+
 
 class_map = {0: 0,
              1: 1,
@@ -37,7 +37,8 @@ feature_extraction_config = {
     'polarity_vocabulary': polarity_vocabulary,
     'positive_words_count': True,
     'negative_words_count': True,
-    'polarity_count': True
+    'polarity_count': True,
+    'parts_of_speech': True
 }
 
 data, target = train_model.prepare_data(src_path=data_path,
@@ -49,4 +50,5 @@ data, target = train_model.prepare_data(src_path=data_path,
                                         feature_config=feature_extraction_config)
 
 clf = SVC(kernel='linear', degree=3)
+#clf = tree.DecisionTreeClassifier(max_depth=5)
 train_model.test_model(clf, data, target)

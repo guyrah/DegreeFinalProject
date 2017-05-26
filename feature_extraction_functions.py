@@ -109,6 +109,23 @@ def count_polarity_words(text, vocabulary):
     return positive, negative, positive - negative
 
 
+def calc_pos_rank(text):
+    nouns_count = 0
+    adjectives_count = 0
+    verbs_count = 0
+    pos_tags = NLP_Utils.text_2_part_of_speech_tag(text)
+
+    for word_token in pos_tags:
+        if word_token[1][:2] == 'NN':
+            nouns_count += 1
+        elif word_token[1][:2] == 'JJ':
+            adjectives_count += 1
+        elif word_token[1][:2] == 'VB':
+            adjectives_count += 1
+
+    return adjectives_count, nouns_count, verbs_count
+
+
 def prepare_text(text, config):
     prepared_text = list()
 
@@ -148,5 +165,8 @@ def prepare_text(text, config):
     if config.has_key('binary_vector'):
         if config['binary_vector']:
             prepared_text.extend(text_2_binary_vector(text, config['text_to_vector_vocabulary']))
+    if config.has_key('parts_of_speech'):
+        if config['parts_of_speech']:
+            prepared_text.extend(calc_pos_rank(text))
 
     return prepared_text
