@@ -52,6 +52,7 @@ def prepare_data(src_path,
 
         data = list()
         target = list()
+        orig_text = list()
 
         # Filters data only relevant data
         for line in src_file:
@@ -112,13 +113,27 @@ def prepare_data(src_path,
         # extract features from data
         for i, curr_text in enumerate(data):
             data[i] = feature_extraction_functions.prepare_text(curr_text, feature_config)
+            orig_text.append(curr_text)
 
 
         #print 'filtered: ', filtered_count
-        return data, target
+        return data, target, orig_text
 
 
-def test_model(clf, data, target):
+def test_model(clf, data, target, original_text=None ,mistakes_path=None):
     cv = StratifiedKFold(shuffle=True, random_state=2)
     predict = cross_val_predict(clf, data, target, cv=cv)
     print_results(target, predict)
+
+    if mistakes_path is not None and original_text is not None:
+        with open(mistakes_path, 'w') as file:
+            file.write('true, predicted, text\n')
+            for i, p in enumerate(predict):
+                if p != target[i]:
+                    try:
+                        file.write(str(target[i]) + ',' + str(p) + ',' + original_text[i].replace('\n', '---').replace(',', ';') + '\n')
+                    except Exception as e:
+                        print original_text[i].replace('\n', '---').replace(',', ';')
+
+
+

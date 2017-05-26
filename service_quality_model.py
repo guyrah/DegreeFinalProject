@@ -22,13 +22,15 @@ class_map = {0: 0,
              3: 3}
 
 # Prepare vocabularies
-text_to_vector_vocabulary = vocabularies.read_vocabulary('text_to_vector_vocabulary.txt')
+text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('text_to_vector_vocabulary.txt')
+text_to_vector_bi_vocabulary = vocabularies.read_vocabulary('text_to_vector_bi_vocabulary.txt')
 best_representing_words = vocabularies.read_best_words_list('service_best_words.txt')
 polarity_vocabulary = vocabularies.read_polarity_vocabulary('polarity_words_vocabulary.txt')
 
 
 feature_extraction_config = {
-    'text_to_vector_vocabulary': text_to_vector_vocabulary,
+    'text_to_vector_uni_vocabulary': text_to_vector_uni_vocabulary,
+    'text_to_vector_bi_vocabulary': text_to_vector_bi_vocabulary,
     'tf_idf_vector': False,
     'counter_vector': True,
     'binary_vector': False,
@@ -38,10 +40,12 @@ feature_extraction_config = {
     'positive_words_count': True,
     'negative_words_count': True,
     'polarity_count': True,
-    'parts_of_speech': True
+    'parts_of_speech': True,
+    'bi_gram': False,
+    'uni_gram': True
 }
 
-data, target = train_model.prepare_data(src_path=data_path,
+data, target, original_text = train_model.prepare_data(src_path=data_path,
                                         data_field=data_field,
                                         target_field=target_field,
                                         class_map=class_map,
@@ -51,4 +55,4 @@ data, target = train_model.prepare_data(src_path=data_path,
 
 clf = SVC(kernel='linear', degree=3)
 #clf = tree.DecisionTreeClassifier(max_depth=5)
-train_model.test_model(clf, data, target)
+train_model.test_model(clf, data, target, original_text, 'service_quality_mistakes.csv')
