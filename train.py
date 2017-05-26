@@ -4,6 +4,7 @@ from sklearn import tree
 import NLP_Utils
 from Logger import Logger
 from config import *
+from sklearn.model_selection import cross_val_score
 import pydotplus
 from config import vectorMode
 
@@ -32,6 +33,7 @@ def removeLabel(dataLabels, dataSamples,  label):
 def train_qualityrank(data_path, data_field, vocabulary_path, mode):
 
     target_field = "qualityrank"
+    #target_field = "fast_rank"
 
     vocabulary   = NLP_Utils.read_vocabulary(vocabulary_path)
 
@@ -44,19 +46,20 @@ def train_qualityrank(data_path, data_field, vocabulary_path, mode):
 
     Logger.log_debug("Target labels:")
     Logger.log_debug(target)
-    Logger.log_debug("Combining labels 2 and 3:")
-    target = combineLabels(target, 2, 3)
+    Logger.log_debug("Combining labels 2 and 1:")
+    target = combineLabels(target, 2, 1)
     Logger.log_info("Combined labels 2 and 3")
     Logger.log_debug(target)
 
     #Logger.log_info("Removing label: 0")
     #target, data = removeLabel(target, data, 0)
-
+    """
     train_data = data[: -config.testSetSize]
     train_target = target[:-config.testSetSize]
     test_data = data[-config.testSetSize:]
     test_target = target[-config.testSetSize:]
-
+    
+    
     a = dict()
     for i in train_target:
         a[i] = a.get(i, 0) + 1
@@ -88,22 +91,16 @@ def train_qualityrank(data_path, data_field, vocabulary_path, mode):
     Logger.log_debug("R: " + str(test_target))
     Logger.log_info("Gaussian Naive Bayes Score:")
     Logger.log_info(gnb.score(test_data, test_target))
-
+    """
     Logger.log_info( "Trying Support Vector Machine")
-    svc = SVC(kernel='poly', degree=5, C=7.0)
-    svc.fit(train_data, train_target)
-    svcPrediction = list(svc.predict(test_data))
-
+    svc = SVC(kernel='linear')
+    scores = cross_val_score(svc, data, target)
+    #svc.fit(train_data, train_target)
+    #svcPrediction = list(svc.predict(test_data))
+    Logger.log_info(scores)
+"""
     Logger.log_debug("P: " + str(svcPrediction))
     Logger.log_debug("R: " + str(test_target))
     Logger.log_info( "Support Vector Machine Score:")
     Logger.log_info(svc.score(test_data, test_target))
-
-"""
-    Logger.log_info("Combined Result:")
-    for i in range(0, len(svcPrediction)):
-        clfRes = clfPrediction[i]
-        gnbRes =  gnbPrediction[i]
-        svcRes = svcPrediction[i]
-        print clfRes,gnbRes,svcRes
-"""
+    """

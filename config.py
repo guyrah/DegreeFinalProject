@@ -16,5 +16,5 @@ class config:
     dataSetFilePath = "tagged_data.json"
     VOCABULARY_PATH = 'vocabulary.txt'
     dataFieldName = 'text'
-    testSetSize = 100
+    testSetSize = 150
     refreshTaggedData = False
