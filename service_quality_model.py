@@ -12,14 +12,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
 src_path = 'tagged_data.json'
-#data_path = 'sample_tagged_data.json'
+#src_path = 'sample_tagged_data.json'
 data_field = 'text'
 target_field = 'quality_of_service_rank'
+
 class_map = {0: 0,
              1: 1,
              # 2: 2,
              3: 3}
-
 
 feature_extraction_config = {
             'text_to_vector_uni_vocabulary': ['vocabularies/text_to_vector_uni_vocabulary_10.txt',
@@ -44,7 +44,16 @@ feature_extraction_config = {
             'bi_gram': [True, False],
             'not_count': [True, False]
         }
-train_model.get_best_config(src_path=src_path, data_field=data_field, target_field=target_field, feature_extraction_config=feature_extraction_config, class_map=class_map)
+classifiers = {
+    'SVC_linear': SVC(kernel='linear'),
+    'Decision_tree_maxdepth6': tree.DecisionTreeClassifier(max_depth=6)
+}
+train_model.get_best_config(src_path=src_path,
+                            data_field=data_field,
+                            target_field=target_field,
+                            feature_extraction_config=feature_extraction_config,
+                            classifiers=classifiers,
+                            class_map=class_map)
 '''
 class_map = {0: 0,
              1: 1,

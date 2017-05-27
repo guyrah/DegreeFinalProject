@@ -7,7 +7,6 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
-from sklearn.svm import SVC
 import vocabularies
 
 #data_path = 'tagged_data.json'
@@ -171,6 +170,7 @@ def get_best_config(src_path,
                     data_field,
                     target_field,
                     feature_extraction_config,
+                    classifiers,
                     class_map=None,
                     balance_classes=False,
                     randomize=False,
@@ -181,6 +181,8 @@ def get_best_config(src_path,
 
     if isinstance(output_file, str):
         with open(output_file, 'w') as output_file:
+            output_file.write('classifier, ')
+
             for k, _ in dict_items:
                 output_file.write(k + ', ')
 
@@ -193,6 +195,7 @@ def get_best_config(src_path,
             get_best_config(src_path=src_path,
                             data_field=data_field,
                             target_field=target_field,
+                            classifiers=classifiers,
                             class_map=class_map,
                             output_file=output_file,
                             feature_extraction_config=feature_extraction_config)
@@ -209,6 +212,7 @@ def get_best_config(src_path,
                     get_best_config(src_path=src_path,
                                     data_field=data_field,
                                     target_field=target_field,
+                                    classifiers=classifiers,
                                     class_map=class_map,
                                     output_file=output_file,
                                     feature_extraction_config=new_dict)
@@ -216,30 +220,33 @@ def get_best_config(src_path,
                 break
 
         if not did_change_config:
-            for _, v in dict_items:
-                output_file.write(str(v) + ', ')
-            try:
-                data, target, _ = prepare_data(src_path=src_path,
-                                               data_field=data_field,
-                                               target_field=target_field,
-                                               class_map=class_map,
-                                               balance_classes=balance_classes,
-                                               randomize=randomize,
-                                               feature_config=feature_extraction_config)
+            for clf_name, clf in classifiers.iteritems():
+                output_file.write(clf_name + ',')
 
-                clf = SVC(kernel='linear', degree=3)
-                acc, class_acc = test_model(clf, data, target, )
+                for _, v in dict_items:
+                    output_file.write(str(v) + ', ')
 
-                output_file.write(str(acc) + ', ')
-                output_file.write(str(class_acc[0])+ ', ')
-                output_file.write(str(class_acc[1])+ ', ')
-                output_file.write(str(class_acc[2]))
+                try:
+                    data, target, _ = prepare_data(src_path=src_path,
+                                                   data_field=data_field,
+                                                   target_field=target_field,
+                                                   class_map=class_map,
+                                                   balance_classes=balance_classes,
+                                                   randomize=randomize,
+                                                   feature_config=feature_extraction_config)
 
-                output_file.write('\n')
-            except Exception as e:
-                output_file.write(e.message.replace(',', ';') + '\n')
-            finally:
-                output_file.flush()
-                print 'finished'
+                    acc, class_acc = test_model(clf, data, target)
+
+                    output_file.write(str(acc) + ', ')
+                    output_file.write(str(class_acc[0])+ ', ')
+                    output_file.write(str(class_acc[1])+ ', ')
+                    output_file.write(str(class_acc[2]))
+
+                except Exception as e:
+                    output_file.write(e.message.replace(',', ';'))
+                finally:
+                    output_file.write('\n')
+                    output_file.flush()
+                    print 'finished'
     else:
         raise 'Invalid output_file type'
