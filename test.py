@@ -18,8 +18,8 @@ feature_extraction_config = {
     'uni_gram': True,
 }
 
-#vocabularies.create_words_polarity_vocabulary('positive-words_raw.txt', 'negative-words_raw.txt', 'polarity_words_vocabulary.txt')
-#a = vocabularies.read_polarity_vocabulary('polarity_words_vocabulary.txt')
+#vocabularies.create_words_polarity_vocabulary('positive-words_raw.txt', 'negative-words_raw.txt', 'polarity_words.txt')
+#a = vocabularies.read_polarity_vocabulary('polarity_words.txt')
 #vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='clean_best_words.txt', number_of_words=10, config=feature_extraction_config)
 #vocabularies.create_bi_vocabulary(data_path, 'text_to_vector_bi_vocabulary.txt', 2)
 #vocabularies.create_vocabulary(data_path, 'text_to_vector_uni_vocabulary_10.txt', 10)

@@ -27,7 +27,7 @@ text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('vocabularies/text_
 #text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('text_to_vector_uni_vocabulary.txt')
 text_to_vector_bi_vocabulary = vocabularies.read_vocabulary('vocabularies/text_to_vector_bi_vocabulary.txt')
 best_representing_words = vocabularies.read_best_words_list('vocabularies/dish_size_best_words_10.txt')
-polarity_vocabulary = vocabularies.read_polarity_vocabulary('vocabularies/polarity_words_vocabulary.txt')
+polarity_vocabulary = vocabularies.read_polarity_vocabulary('vocabularies/polarity_words.txt')
 
 
 feature_extraction_config = {

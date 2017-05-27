@@ -11,12 +11,40 @@ from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
-data_path = 'tagged_data.json'
+src_path = 'tagged_data.json'
 #data_path = 'sample_tagged_data.json'
 data_field = 'text'
 target_field = 'quality_of_service_rank'
+class_map = {0: 0,
+             1: 1,
+             # 2: 2,
+             3: 3}
 
-train_model.get_best_config()
+
+feature_extraction_config = {
+            'text_to_vector_uni_vocabulary': ['vocabularies/text_to_vector_uni_vocabulary_10.txt',
+                                              'vocabularies/text_to_vector_uni_vocabulary_20.txt',
+                                              'vocabularies/text_to_vector_uni_vocabulary_-1.txt',
+                                              'vocabularies/text_to_vector_vocabulary.txt'],
+            'text_to_vector_bi_vocabulary': ['vocabularies/text_to_vector_bi_vocabulary.txt'],
+            'tf_idf_vector': [True, False],
+            'counter_vector': [True, False],
+            'binary_vector': [True,False],
+            'best_representing_words_list': ['vocabularies/service_best_words.txt',
+                                             'vocabularies/service_best_words_10.txt',
+                                             'vocabularies/service_best_words_12.txt',
+                                             'vocabularies/service_best_words_20.txt'],
+            'surrounding_words': [True, False],
+            'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+            'positive_words_count': [True, False],
+            'negative_words_count': [True, False],
+            'polarity_count': [True, False],
+            'parts_of_speech': [True, False],
+            'uni_gram': [True, False],
+            'bi_gram': [True, False],
+            'not_count': [True, False]
+        }
+train_model.get_best_config(src_path=src_path, data_field=data_field, target_field=target_field, feature_extraction_config=feature_extraction_config, class_map=class_map)
 '''
 class_map = {0: 0,
              1: 1,
@@ -28,7 +56,7 @@ text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('vocabularies/text_
 #text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('text_to_vector_uni_vocabulary.txt')
 text_to_vector_bi_vocabulary = vocabularies.read_vocabulary('vocabularies/text_to_vector_bi_vocabulary.txt')
 best_representing_words = vocabularies.read_best_words_list('vocabularies/service_best_words_costume.txt')
-polarity_vocabulary = vocabularies.read_polarity_vocabulary('vocabularies/polarity_words_vocabulary.txt')
+polarity_vocabulary = vocabularies.read_polarity_vocabulary('vocabularies/polarity_words.txt')
 
 
 feature_extraction_config = {
@@ -49,7 +77,7 @@ feature_extraction_config = {
     'not_count': False
 }
 
-data, target, original_text = train_model.prepare_data(src_path=data_path,
+data, target, original_text = train_model.prepare_data(src_path=src_path,
                                         data_field=data_field,
                                         target_field=target_field,
                                         class_map=class_map,

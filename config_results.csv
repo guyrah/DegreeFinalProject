@@ -1,9 +1,13 @@
-bi_gram, not_count, uni_gram, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-False, False, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-False, False, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-False, True, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-False, True, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-True, False, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-True, False, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-True, True, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
-True, True, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+best_representing_words_list, bi_gram, binary_vector, counter_vector, negative_words_count, not_count, parts_of_speech, polarity_count, polarity_vocabulary, positive_words_count, surrounding_words, text_to_vector_bi_vocabulary, text_to_vector_uni_vocabulary, tf_idf_vector, uni_gram, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_10.txt, True, True, 78.364389234, 91.3242009132, 50.0, 73.9690721649
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_10.txt, True, False, 75.8799171843, 83.7899543379, 51.4285714286, 75.7731958763
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_10.txt, False, True, 78.5714285714, 91.5525114155, 50.0, 74.2268041237
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_10.txt, False, False, 76.0869565217, 84.0182648402, 51.4285714286, 76.0309278351
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_20.txt, True, True, 77.4327122153, 90.4109589041, 47.1428571429, 73.7113402062
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_20.txt, True, False, 75.8799171843, 83.7899543379, 51.4285714286, 75.7731958763
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_20.txt, False, True, 77.3291925466, 90.1826484018, 47.1428571429, 73.7113402062
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_20.txt, False, False, 76.0869565217, 84.0182648402, 51.4285714286, 76.0309278351
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_-1.txt, True, True, 78.4679089027, 90.6392694064, 49.2857142857, 75.2577319588
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_-1.txt, True, False, 75.8799171843, 83.7899543379, 51.4285714286, 75.7731958763
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_-1.txt, False, True, 78.4679089027, 90.6392694064, 49.2857142857, 75.2577319588
+vocabularies/service_best_words.txt, True, True, True, True, True, True, True, vocabularies/polarity_words.txt, True, True, vocabularies/text_to_vector_bi_vocabulary.txt, vocabularies/text_to_vector_uni_vocabulary_-1.txt, False, False, 

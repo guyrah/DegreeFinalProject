@@ -8,34 +8,41 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
 from sklearn.svm import SVC
+import vocabularies
 
-data_path = 'tagged_data.json'
-data_field = 'text'
-target_field = 'quality_of_service_rank'
+#data_path = 'tagged_data.json'
+#data_field = 'text'
+#target_field = 'quality_of_service_rank'
 # target_field = 'qualityrank'
 # target_field = 'value_for_money_rank'
 
 '''
     Prints predictions results
 '''
-def print_results(target, predict):
+
+
+def print_results(target, predict, verbose=True):
     conf_matrix = confusion_matrix(target, predict)
     accuracy = accuracy_score(target, predict) * 100
     class_accuracy = list()
-    print 'accuracy:', accuracy
-    print conf_matrix
+
+    if verbose:
+        print 'accuracy:', accuracy
+        print conf_matrix
 
     for i, row in enumerate(conf_matrix):
         row_correct = 0
         row_error = 0
         for j, cell in enumerate(row):
-            if j==i:
+            if j == i:
                 row_correct += cell
             else:
                 row_error += cell
 
-        print str(i) + ':', str(row_correct / float(row_correct+row_error)*100) + '%'
-        class_accuracy.append(row_correct / float(row_correct+row_error)*100)
+        if verbose:
+            print str(i) + ':', str(row_correct / float(row_correct + row_error) * 100) + '%'
+
+        class_accuracy.append(row_correct / float(row_correct + row_error) * 100)
 
     return accuracy, class_accuracy
 
@@ -117,20 +124,32 @@ def prepare_data(src_path,
                 data.extend(v)
                 target.extend([k] * len(v))
 
+        if feature_config.has_key('polarity_vocabulary'):
+            if isinstance(feature_config['polarity_vocabulary'], str):
+                feature_config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(feature_config['polarity_vocabulary'])
+        if feature_config.has_key('best_representing_words_list'):
+            if isinstance(feature_config['best_representing_words_list'], str):
+                feature_config['best_representing_words_list'] = vocabularies.read_best_words_list(feature_config['best_representing_words_list'])
+        if feature_config.has_key('text_to_vector_bi_vocabulary'):
+            if isinstance(feature_config['text_to_vector_bi_vocabulary'], str):
+                feature_config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(feature_config['text_to_vector_bi_vocabulary'])
+        if feature_config.has_key('text_to_vector_uni_vocabulary'):
+            if isinstance(feature_config['text_to_vector_uni_vocabulary'], str):
+                feature_config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(feature_config['text_to_vector_uni_vocabulary'])
+
         # extract features from data
         for i, curr_text in enumerate(data):
             data[i] = feature_extraction_functions.prepare_text(curr_text, feature_config)
             orig_text.append(curr_text)
 
-
-        #print 'filtered: ', filtered_count
+        # print 'filtered: ', filtered_count
         return data, target, orig_text
 
 
-def test_model(clf, data, target, original_text=None ,mistakes_path=None):
+def test_model(clf, data, target, original_text=None, mistakes_path=None, verbose=False):
     cv = StratifiedKFold(shuffle=True, random_state=2)
     predict = cross_val_predict(clf, data, target, cv=cv)
-    accuracy, class_accuracy = print_results(target, predict)
+    accuracy, class_accuracy = print_results(target, predict, verbose)
 
     if mistakes_path is not None and original_text is not None:
         with open(mistakes_path, 'w') as file:
@@ -138,40 +157,24 @@ def test_model(clf, data, target, original_text=None ,mistakes_path=None):
             for i, p in enumerate(predict):
                 if p != target[i]:
                     try:
-                        file.write(str(target[i]) + ',' + str(p) + ',' + original_text[i].replace('\n', '---').replace(',', ';') + '\n')
+                        file.write(
+                            str(target[i]) + ',' + str(p) + ',' + original_text[i].replace('\n', '---').replace(',',
+                                                                                                                ';') + '\n')
                     except Exception as e:
                         e
-                        #print original_text[i].replace('\n', '---').replace(',', ';')
+                        # print original_text[i].replace('\n', '---').replace(',', ';')
 
     return accuracy, class_accuracy
 
 
-def get_best_config(output_file='config_results.csv', feature_extraction_config=None):
-    if feature_extraction_config is None:
-        feature_extraction_config = {
-            'uni_gram': [False, True],
-            'bi_gram': [False,True],
-            'not_count': [False, True]
-        }
-        '''
-        feature_extraction_config = {
-            'text_to_vector_uni_vocabulary': 1,
-            'text_to_vector_bi_vocabulary': 1,
-            'tf_idf_vector': False,
-            'counter_vector': True,
-            'binary_vector': False,
-            'best_representing_words_list': 1,
-            'surrounding_words': True,
-            'polarity_vocabulary': 1,
-            'positive_words_count': True,
-            'negative_words_count': True,
-            'polarity_count': True,
-            'parts_of_speech': True,
-            'uni_gram': True,
-            'bi_gram': False,
-            'not_count': False
-        }
-        '''
+def get_best_config(src_path,
+                    data_field,
+                    target_field,
+                    feature_extraction_config,
+                    class_map=None,
+                    balance_classes=False,
+                    randomize=False,
+                    output_file='config_results.csv'):
 
     dict_items = feature_extraction_config.items()
     dict_items.sort()
@@ -187,37 +190,56 @@ def get_best_config(output_file='config_results.csv', feature_extraction_config=
             output_file.write('3_accuracy')
             output_file.write('\n')
 
-            get_best_config(output_file, feature_extraction_config)
+            get_best_config(src_path=src_path,
+                            data_field=data_field,
+                            target_field=target_field,
+                            class_map=class_map,
+                            output_file=output_file,
+                            feature_extraction_config=feature_extraction_config)
     elif isinstance(output_file, file):
         did_change_config = False
 
-        for k,v in dict_items:
+        for k, v in dict_items:
             if isinstance(feature_extraction_config[k], list):
                 did_change_config = True
 
                 for i in v:
                     new_dict = dict(feature_extraction_config)
                     new_dict[k] = i
-                    get_best_config(output_file, new_dict)
+                    get_best_config(src_path=src_path,
+                                    data_field=data_field,
+                                    target_field=target_field,
+                                    class_map=class_map,
+                                    output_file=output_file,
+                                    feature_extraction_config=new_dict)
 
                 break
 
         if not did_change_config:
             for _, v in dict_items:
                 output_file.write(str(v) + ', ')
+            try:
+                data, target, _ = prepare_data(src_path=src_path,
+                                               data_field=data_field,
+                                               target_field=target_field,
+                                               class_map=class_map,
+                                               balance_classes=balance_classes,
+                                               randomize=randomize,
+                                               feature_config=feature_extraction_config)
 
-            #clf = SVC(kernel='linear')
+                clf = SVC(kernel='linear', degree=3)
+                acc, class_acc = test_model(clf, data, target, )
 
-            #test_model(clf, )
-            output_file.write('total_accuracy, ')
-            output_file.write('0_accuracy, ')
-            output_file.write('1_accuracy, ')
-            output_file.write('3_accuracy')
+                output_file.write(str(acc) + ', ')
+                output_file.write(str(class_acc[0])+ ', ')
+                output_file.write(str(class_acc[1])+ ', ')
+                output_file.write(str(class_acc[2]))
 
-            output_file.write('\n')
+                output_file.write('\n')
+            except Exception as e:
+                output_file.write(e.message.replace(',', ';') + '\n')
+            finally:
+                output_file.flush()
+                print 'finished'
     else:
         raise 'Invalid output_file type'
-
-
-
-

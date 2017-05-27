@@ -23,7 +23,7 @@ class_map = {0: 0,
 # Prepare vocabularies
 text_to_vector_vocabulary = vocabularies.read_vocabulary('text_to_vector_vocabulary.txt')
 best_representing_words = vocabularies.read_best_words_list('clean_best_words.txt')
-polarity_vocabulary = vocabularies.read_polarity_vocabulary('polarity_words_vocabulary.txt')
+polarity_vocabulary = vocabularies.read_polarity_vocabulary('polarity_words.txt')
 
 
 feature_extraction_config = {
