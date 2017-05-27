@@ -4,6 +4,10 @@ import re
 def prepare_text(text, config):
     prepared_text = list()
 
+    if config.has_key('remove_stop_words'):
+        if config['remove_stop_words']:
+            text = remove_stopwords(text)
+
     if config.has_key('surrounding_words'):
         if config['surrounding_words']:
             text,reps = get_surrounding_words(text, config['best_representing_words_list'])
@@ -267,3 +271,14 @@ def text_2_binary_bi_vector(text, vocabulary):
 
 def not_counter(text):
     return len(re.findall(r"not", text.lower()))
+
+
+def remove_stopwords(text):
+    text = text.split()
+
+    for i,word in enumerate(text):
+        word = NLP_Utils.stem_word(word)
+        if NLP_Utils.is_word_stop_word(word):
+            text[i] = word
+
+    return ' '.join(text)
