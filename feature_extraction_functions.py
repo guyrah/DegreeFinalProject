@@ -1,4 +1,5 @@
 import NLP_Utils
+import re
 
 def prepare_text(text, config):
     prepared_text = list()
@@ -33,6 +34,9 @@ def prepare_text(text, config):
     if config.has_key('parts_of_speech'):
         if config['parts_of_speech']:
             prepared_text.extend(calc_pos_rank(text))
+    if config.has_key('not_count'):
+        if config['not_count']:
+            prepared_text.extend([not_counter(text)])
 
     if config.has_key('bi_gram'):
         if config['bi_gram']:
@@ -259,3 +263,7 @@ def text_2_binary_bi_vector(text, vocabulary):
             words_not_in_vocabulary += 1
 
     return hot_vector
+
+
+def not_counter(text):
+    return len(re.findall(r"not", text.lower()))

@@ -1,0 +1,9 @@
+bi_gram, not_count, uni_gram, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+False, False, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+False, False, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+False, True, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+False, True, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+True, False, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+True, False, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+True, True, False, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy
+True, True, True, total_accuracy, 0_accuracy, 1_accuracy, 3_accuracy

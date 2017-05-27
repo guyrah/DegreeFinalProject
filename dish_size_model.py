@@ -14,10 +14,9 @@ from sklearn.svm import SVC
 data_path = 'tagged_data.json'
 #data_path = 'sample_tagged_data.json'
 data_field = 'text'
-target_field = 'quality_of_service_rank'
+target_field = 'big_dish_rank'
 
-train_model.get_best_config()
-'''
+
 class_map = {0: 0,
              1: 1,
              # 2: 2,
@@ -27,7 +26,7 @@ class_map = {0: 0,
 text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('vocabularies/text_to_vector_uni_vocabulary_10.txt')
 #text_to_vector_uni_vocabulary = vocabularies.read_vocabulary('text_to_vector_uni_vocabulary.txt')
 text_to_vector_bi_vocabulary = vocabularies.read_vocabulary('vocabularies/text_to_vector_bi_vocabulary.txt')
-best_representing_words = vocabularies.read_best_words_list('vocabularies/service_best_words_costume.txt')
+best_representing_words = vocabularies.read_best_words_list('vocabularies/dish_size_best_words_10.txt')
 polarity_vocabulary = vocabularies.read_polarity_vocabulary('vocabularies/polarity_words_vocabulary.txt')
 
 
@@ -53,12 +52,10 @@ data, target, original_text = train_model.prepare_data(src_path=data_path,
                                         data_field=data_field,
                                         target_field=target_field,
                                         class_map=class_map,
-                                        balance_classes=False,
+                                        balance_classes=True,
                                         randomize=False,
                                         feature_config=feature_extraction_config)
 
 clf = SVC(kernel='linear', degree=3)
 #clf = tree.DecisionTreeClassifier(max_depth=5)
-
-train_model.test_model(clf, data, target, original_text, 'service_quality_mistakes.csv')
-'''
+train_model.test_model(clf, data, target, original_text, 'dish_size_quality_mistakes.csv')

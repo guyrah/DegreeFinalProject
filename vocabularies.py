@@ -93,7 +93,7 @@ def create_best_words_list(data_path, data_field, target_field, save_path, confi
                  3: 1}
 
     # Prepares data to train model
-    data, target = train_model.prepare_data(src_path=data_path,
+    data, target, _ = train_model.prepare_data(src_path=data_path,
                                             data_field=data_field,
                                             target_field=target_field,
                                             class_map=class_map,
@@ -113,8 +113,8 @@ def create_best_words_list(data_path, data_field, target_field, save_path, confi
     c = c[:number_of_words]
 
     # Prepares dict to transform int to words
-    voc_list = [None] * len(config['text_to_vector_vocabulary'])
-    for k, v in config['text_to_vector_vocabulary'].iteritems():
+    voc_list = [None] * len(config['text_to_vector_uni_vocabulary'])
+    for k, v in config['text_to_vector_uni_vocabulary'].iteritems():
         voc_list[v.get_index()] = k
 
     # Write to file
