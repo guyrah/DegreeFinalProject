@@ -16,25 +16,9 @@ def prepare_text(text, config):
     positive_words_count = False
     negative_words_count = False
     polarity_count = False
-    if config.has_key('positive_words_count'):
-        if config['positive_words_count']:
-            positive_words_count = True
-    if config.has_key('negative_words_count'):
-        if config['negative_words_count']:
-            negative_words_count = True
     if config.has_key('polarity_count'):
         if config['polarity_count']:
-            polarity_count = True
-    if positive_words_count or negative_words_count or polarity_count:
-        pos, neg, sum = count_polarity_words(text, config['polarity_vocabulary'])
-
-        if positive_words_count:
-            prepared_text.extend([pos])
-        if negative_words_count:
-            prepared_text.extend([neg])
-        if polarity_count:
-            prepared_text.extend([sum])
-
+            prepared_text.extend(count_polarity_words(text, config['polarity_vocabulary']))
     if config.has_key('parts_of_speech'):
         if config['parts_of_speech']:
             prepared_text.extend(calc_pos_rank(text))

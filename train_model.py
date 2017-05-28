@@ -1,19 +1,14 @@
 import json
 import random
 import feature_extraction_functions
+import vocabularies
 
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
-import vocabularies
-
-#data_path = 'tagged_data.json'
-#data_field = 'text'
-#target_field = 'quality_of_service_rank'
-# target_field = 'qualityrank'
-# target_field = 'value_for_money_rank'
+import pickle
 
 '''
     Prints predictions results
@@ -125,16 +120,20 @@ def prepare_data(src_path,
 
         if feature_config.has_key('polarity_vocabulary'):
             if isinstance(feature_config['polarity_vocabulary'], str):
-                feature_config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(feature_config['polarity_vocabulary'])
+                feature_config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(
+                    feature_config['polarity_vocabulary'])
         if feature_config.has_key('best_representing_words_list'):
             if isinstance(feature_config['best_representing_words_list'], str):
-                feature_config['best_representing_words_list'] = vocabularies.read_best_words_list(feature_config['best_representing_words_list'])
+                feature_config['best_representing_words_list'] = vocabularies.read_best_words_list(
+                    feature_config['best_representing_words_list'])
         if feature_config.has_key('text_to_vector_bi_vocabulary'):
             if isinstance(feature_config['text_to_vector_bi_vocabulary'], str):
-                feature_config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(feature_config['text_to_vector_bi_vocabulary'])
+                feature_config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(
+                    feature_config['text_to_vector_bi_vocabulary'])
         if feature_config.has_key('text_to_vector_uni_vocabulary'):
             if isinstance(feature_config['text_to_vector_uni_vocabulary'], str):
-                feature_config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(feature_config['text_to_vector_uni_vocabulary'])
+                feature_config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(
+                    feature_config['text_to_vector_uni_vocabulary'])
 
         # extract features from data
         for i, curr_text in enumerate(data):
@@ -158,7 +157,7 @@ def test_model(clf, data, target, original_text=None, mistakes_path=None, verbos
                     try:
                         file.write(
                             str(target[i]) + ',' + str(p) + ',' + original_text[i].replace('\n', '---').replace(',',
-                                                                                                                ';') + '\n')
+                                                                                                                '|') + '\n')
                     except Exception as e:
                         e
                         # print original_text[i].replace('\n', '---').replace(',', ';')
@@ -175,7 +174,6 @@ def get_best_config(src_path,
                     balance_classes=False,
                     randomize=False,
                     output_file='config_results.csv'):
-
     dict_items = feature_extraction_config.items()
     dict_items.sort()
 
@@ -198,7 +196,8 @@ def get_best_config(src_path,
                             classifiers=classifiers,
                             class_map=class_map,
                             output_file=output_file,
-                            feature_extraction_config=feature_extraction_config)
+                            feature_extraction_config=feature_extraction_config,
+                            balance_classes=balance_classes)
     elif isinstance(output_file, file):
         did_change_config = False
 
@@ -215,7 +214,8 @@ def get_best_config(src_path,
                                     classifiers=classifiers,
                                     class_map=class_map,
                                     output_file=output_file,
-                                    feature_extraction_config=new_dict)
+                                    feature_extraction_config=new_dict,
+                                    balance_classes=balance_classes)
 
                 break
 
@@ -238,8 +238,8 @@ def get_best_config(src_path,
                     acc, class_acc = test_model(clf, data, target)
 
                     output_file.write(str(acc) + ', ')
-                    output_file.write(str(class_acc[0])+ ', ')
-                    output_file.write(str(class_acc[1])+ ', ')
+                    output_file.write(str(class_acc[0]) + ', ')
+                    output_file.write(str(class_acc[1]) + ', ')
                     output_file.write(str(class_acc[2]))
 
                 except Exception as e:
@@ -250,3 +250,26 @@ def get_best_config(src_path,
                     print 'finished'
     else:
         raise 'Invalid output_file type'
+
+
+def train_model(clf,
+                src_path,
+                data_field,
+                target_field,
+                export_path=None,
+                class_map=None,
+                balance_classes=False,
+                randomize=False,
+                feature_config=None):
+    data, target, _ = prepare_data(src_path=src_path,
+                                   data_field=data_field,
+                                   target_field=target_field,
+                                   class_map=class_map,
+                                   balance_classes=balance_classes,
+                                   randomize=randomize,
+                                   feature_config=feature_config)
+
+    clf.fit(data, target)
+
+    if export_path is not None:
+        s = pickle.dump(clf, open(export_path, 'wb'))
