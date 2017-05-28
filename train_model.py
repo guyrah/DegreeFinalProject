@@ -8,7 +8,7 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
-import pickle
+from sklearn.externals import joblib
 
 '''
     Prints predictions results
@@ -272,4 +272,4 @@ def train_model(clf,
     clf.fit(data, target)
 
     if export_path is not None:
-        s = pickle.dump(clf, open(export_path, 'wb'))
+        joblib.dump(clf, export_path)
