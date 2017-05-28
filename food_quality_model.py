@@ -7,7 +7,7 @@ from sklearn.svm import SVC
 
 src_path = 'tagged_data.json'
 data_field = 'text'
-target_field = 'quality_of_service_rank'
+target_field = 'qualityrank'
 
 def check_best_config():
     feature_extraction_config = {
@@ -19,10 +19,8 @@ def check_best_config():
                 'tf_idf_vector': [True, False],
                 'counter_vector': [True, False],
                 #'binary_vector': [True,False],
-                'best_representing_words_list': ['vocabularies/service_best_words.txt',
-                                                 'vocabularies/service_best_words_10.txt',
-                                                 'vocabularies/service_best_words_12.txt',
-                                                 'vocabularies/service_best_words_custom.txt'],
+                'best_representing_words_list': ['vocabularies/food_quality_best_words_custom.txt',
+                                                 'vocabularies/food_quality_best_words_10.txt'],
                 'surrounding_words': [True, False],
                 'polarity_vocabulary': 'vocabularies/polarity_words.txt',
                 'polarity_count': [True, False],
@@ -63,7 +61,7 @@ def train_model_for_debug():
         'tf_idf_vector': False,
         'counter_vector': True,
         'binary_vector': False,
-        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
+        'best_representing_words_list': 'vocabularies/food_quality_best_words_custom.txt',
         'surrounding_words': True,
         'polarity_vocabulary': 'vocabularies/polarity_words.txt',
         'positive_words_count': True,
@@ -85,12 +83,12 @@ def train_model_for_debug():
                                             data_field=data_field,
                                             target_field=target_field,
                                             class_map=class_map,
-                                            balance_classes=False,
+                                            balance_classes=True,
                                             randomize=False,
                                             feature_config=feature_extraction_config)
     clf = SVC(kernel='linear')
 
-    train_model.test_model(clf, data, target, original_text, 'service_quality_mistakes.csv', verbose=True)
+    train_model.test_model(clf, data, target, original_text, 'food_quality_mistakes.csv', verbose=True)
 
 def train():
     feature_extraction_config = {
@@ -99,8 +97,8 @@ def train():
         'tf_idf_vector': False,
         'counter_vector': True,
         'binary_vector': False,
-        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
-        'surrounding_words': True,
+        'best_representing_words_list': 'vocabularies/food_quality_best_words_custom.txt',
+        'surrounding_words': False,
         'polarity_vocabulary': 'vocabularies/polarity_words.txt',
         'positive_words_count': True,
         'negative_words_count': True,
@@ -123,12 +121,12 @@ def train():
                             src_path=src_path,
                             data_field=data_field,
                             target_field=target_field,
-                            export_path='Classifiers/Service_model.pkl',
+                            export_path='models/food_quality_model.pkl',
                             class_map=class_map,
                             balance_classes=False,
                             randomize=False,
                             feature_config=feature_extraction_config)
 
 #check_best_config()
-#train_model_for_debug()
-train()
+train_model_for_debug()
+#train()
