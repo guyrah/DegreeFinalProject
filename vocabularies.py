@@ -92,7 +92,7 @@ def create_best_words_list(data_path, data_field, target_field, save_path, confi
                  2: 1,
                  3: 1}
 
-    # Prepares data to train model
+    # Prepares data to train models
     data, target, _ = train_model.prepare_data(src_path=data_path,
                                             data_field=data_field,
                                             target_field=target_field,
@@ -101,7 +101,7 @@ def create_best_words_list(data_path, data_field, target_field, save_path, confi
                                             randomize=False,
                                             feature_config=config)
 
-    # Trains the model with the calculated depth
+    # Trains the models with the calculated depth
     clf = tree.DecisionTreeClassifier(max_depth=max_depth)
     clf.fit(data, target)
 
