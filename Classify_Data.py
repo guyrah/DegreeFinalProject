@@ -29,7 +29,7 @@ jsonDataField = "text"
 jsonPrivateIdField = "private_id"
 _db = None
 _logfile = None
-_log_file_name = "models/logs_threading.txt"
+_log_file_name = "models/logs/logs.txt"
 _reviews_jsons = None
 _reviews_bulk = None
 _count_success = None
@@ -430,6 +430,7 @@ def get_rest_reviews_sum(rest_id, labels):
     return rank_sum
 
 def main():
+    start = datetime.now()
     try:
         init_logger()
 
@@ -451,21 +452,21 @@ def main():
             end = datetime.now()
             dur = end - start
             log("Duration = " + str (dur))
-
             _reviews_jsons = None
             """
             log("Tagging multi threaded...")
-            start = datetime.now()
-            tag_reviews_multi(num_of_reviews=0, num_of_threads=10, bulk_size=1000, labels=labels)
-            end = datetime.now()
-            dur = end - start
-            log("Duration = " + str(dur))
+
+            tag_reviews_multi(num_of_reviews=1000, num_of_threads=10, bulk_size=1000, labels=labels)
 
         if update_restaurants == True:
             log("Ranking restaurants according to tagged reviews")
             update_restuarants_ranks(labels)
 
         log("Finished script successfully.")
+
+        end = datetime.now()
+        dur = end - start
+        log("Script duration = " + str(dur))
     except:
         log("**********Exception occured********** : " + str(sys.exc_info()))
         raise
