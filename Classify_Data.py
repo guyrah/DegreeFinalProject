@@ -2,7 +2,7 @@ import sys
 from sklearn.externals import joblib
 import Mongo_Access
 import Sunny_NLP_Utils
-import featuresExtractor
+import sunny_featuresExtractor
 from datetime import datetime
 from pymongo import MongoClient
 from bson.json_util import dumps
