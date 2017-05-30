@@ -1,4 +1,5 @@
 import vocabularies
+import operator
 import sys
 from sklearn.externals import joblib
 import feature_extraction_functions
@@ -19,8 +20,8 @@ mongoDbHost = "193.106.55.77"
 mongoDbPort = 27017
 
 #reviews_collection = "reviews_sunny"
-#reviews_collection = "reviews_threading"
-reviews_collection = "reviews_preprod"
+reviews_collection = "reviews_threading"
+#reviews_collection = "reviews_preprod"
 restaurant_collection = "restaurants_sunny"
 
 review_ids_to_update_path = "models/Resources/ids_to_update.json"
@@ -42,7 +43,7 @@ category_food_speed = "fast_rank"
 
 _db = None
 _logfile = None
-_log_file_name = "models/logs/logs.txt"
+_log_file_name = "models/logs/logs2.txt"
 _reviews_jsons = None
 _reviews_bulk = None
 _count_success = None
@@ -411,12 +412,13 @@ def get_label_config(label):
     elif label == category_service_quality:
         config = __category_service_quality_config
     else:
-        raise "Label does not exists"
+        raise Exception("Label does not exists exception in get_label_config")
 
     return config
 
 #endregion
 
+#region reviews
 def text_to_feat_vector(text, config, label):
     # get vector according to Sunny's code
     if label in [category_food_quality, category_food_speed]:
@@ -425,7 +427,7 @@ def text_to_feat_vector(text, config, label):
     elif label in [category_service_quality, category_dish_size]:
         vector = feature_extraction_functions.prepare_text(text, config)
     else:
-        raise "label error"
+        raise Exception("label error in text_to_feat_vector method")
 
     return vector
 
@@ -503,6 +505,8 @@ def tag_all_reviews(labels, num_of_reviews):
 
     log("Finished to classify reviews")
 
+#endregion
+
 #region Restaurants
 
 """
@@ -517,9 +521,35 @@ def update_restuarants_ranks(labels):
     with open(rest_ids_path,"r") as rest_ids:
         for line in rest_ids:
             rest_id = line.strip()
-            log("Getting restaurant reviews sum for rest_id: " + rest_id)
+            log("Trying to get restaurant reviews sum for rest_id: " + rest_id)
             rest_rank_sum = get_rest_reviews_sum(rest_id, labels)
-            normalize_rank_sum(rest_id, labels, rest_rank_sum)
+            if(len(rest_rank_sum) > 0):
+                log("Normalizing reviews tags for rest_id: " + rest_id)
+                normalized_dict = normalize_rank_sum(rest_id, labels, rest_rank_sum)
+                update_restaurant_in_db(rest_id, normalized_dict)
+            else:
+                log("There are no tagged reviews for rest_id: " + rest_id)
+
+"""
+This function gets all the reviews of a specific restaurant id and calculates
+how many reviews were tagged 3 ,2 ,1 ,0 for each label
+"""
+def get_rest_reviews_sum(rest_id, labels):
+    rank_sum = dict()
+    db = get_connection()
+
+    cursor = db[reviews_collection].find({"business_id" : rest_id, "auto_tag" : 1})
+
+    for i, doc in enumerate(cursor):
+        for label in labels:
+            cur_json = json.loads(dumps(doc))
+            try:
+                cur_rank = int(doc[label])
+                rank_sum[(label,cur_rank)] = rank_sum.get((label,cur_rank), 0) + 1
+            except:
+                log("Sample not tagged...")
+
+    return rank_sum
 
 """
 This function normalizes the sum rank to a number between 0 to 5 for each category
@@ -530,14 +560,35 @@ def normalize_rank_sum(rest_id, labels, rest_rank_sum):
     normalized_dict = {}
 
     for key, value in rest_rank_sum.iteritems():
-        normalized_dict[key[0]] = normalized_dict.get([key[0]],(0,0)) + (key[1]* value, value)
+        normalized_dict[key[0]] = tuple(map(operator.add, normalized_dict.get(key[0],(0,0)), (key[1]* value, value)))
 
-    #calc average
-        for label, sum_and_count in normalized_dict.iteritems():
-            normalized_dict[key] = sum_and_count[0] / sum_and_count[1]
+    #calc average and normalize
+    for label, sum_and_count in normalized_dict.iteritems():
+        normalized_dict[label] = (float(sum_and_count[0]) / float(sum_and_count[1])) * 5.0 / 3.0
 
-        log(str(normalized_dict))
-        return
+    log(str(normalized_dict))
+    return normalized_dict
+
+def update_restaurant_in_db(rest_id, normalized_dict):
+    log("Trying to update scores in DB for rest_id: " + str(rest_id))
+    try:
+        db = get_connection()
+
+        for key, value in normalized_dict.iteritems():
+            db_key = key.replace("rank", "score")
+            log("Updating rest_id: " + str(rest_id) + " for label: "+str(db_key)+" with normalized value: " + str(value))
+            db[restaurant_collection].update({"business_id" : rest_id},
+                                          {"$set":
+                                              {
+                                                  db_key : int(value),
+                                              }})
+        db[restaurant_collection].update({"business_id": rest_id},
+                                 {"$set":
+                                     {
+                                         "auto_tag": 1,
+                                     }})
+    except:
+        log("Exception occured while trying to update rest_id: " + str(rest_id))
 
 """
 This function read all the restaurants that have reviews to a file
@@ -555,25 +606,6 @@ def read_restaurants_ids_with_reviews():
             if (rest_reviews_count > 0):
                 file.write(business_id + '\n')
 
-"""
-This function gets all the reviews of a specific restaurant id and calculates
-how many reviews were tagged 3 ,2 ,1 ,0 for each label
-"""
-def get_rest_reviews_sum(rest_id, labels):
-    rank_sum = dict()
-    db = get_connection()
-    cursor = db[reviews_collection].find({"business_id" : rest_id})
-
-    for i, doc in enumerate(cursor):
-        for label in labels:
-            try:
-                cur_rank = int(doc[label])
-                rank_sum[(label,cur_rank)] = rank_sum.get((label,cur_rank), 0) + 1
-            except:
-                log("Sample not tagged...")
-
-    return rank_sum
-
 #endregion
 
 def main():
@@ -581,21 +613,21 @@ def main():
         startTime = datetime.now()
         init_logger()
         log("starting script...")
-        tag_reviews = True
-        update_restaurants = False
-
-        labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
+        tag_reviews = False
+        update_restaurants = True
+        labels = [category_food_quality, category_food_speed]
+        #labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
         if tag_reviews:
-            log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
-            load_reviews_to_fs(mongoDbURL, review_ids_to_update_path, 0)
+            #log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
+            #load_reviews_to_fs(mongoDbURL, review_ids_to_update_path, 0)
             log("Loading vocabulary to memory...")
             load_vocabulary()
             log("Loading all categories configuratiosn to memory...")
             load_configs()
             log("Tagging all reviews and updating categories in the DB")
             #tag_all_reviews(labels, 1000)
-            tag_reviews_multi(num_of_reviews=1000, num_of_threads=1, bulk_size=10, labels=labels)
+            tag_reviews_multi(num_of_reviews=0, num_of_threads=25, bulk_size=1000, labels=labels)
 
         if update_restaurants:
             log("Ranking restaurants according to tagged reviews")
