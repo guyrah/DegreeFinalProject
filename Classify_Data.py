@@ -1,3 +1,4 @@
+import vocabularies
 import sys
 from sklearn.externals import joblib
 import feature_extraction_functions
@@ -24,10 +25,15 @@ restaurant_collection = "restaurants_sunny"
 
 review_ids_to_update_path = "models/Resources/ids_to_update.json"
 rest_ids_path = "models/Resources/rest_ids.txt"
-vocabulary_path = "models/Resources/vocabulary_for_example_models.txt"
+vocabulary_path = "models/Resources/vocabulary.txt"
 __vocabulary = None
 jsonDataField = "text"
 jsonPrivateIdField = "private_id"
+
+__category_service_quality_config = None
+__category_dish_size_config = None
+__category_food_quality_config = None
+__category_food_speed_config = None
 
 category_dish_size = "big_dish_rank"
 category_service_quality = "quality_of_service_rank"
@@ -227,7 +233,7 @@ def slave(bulk_size, models):
 
 #region filesystem
 
-def update_vocabulary():
+def load_vocabulary():
     vocabulary = dict()
     global __vocabulary
     if not __vocabulary:
@@ -281,44 +287,52 @@ def update_review(private_id, values):
                                       }})
 #endregion
 
-def get_label_config(label):
-    config = {}
-    if label == category_food_quality:
-        config["target_field"] = label
-        config["vocabulary"] = __vocabulary
-        config["mode"] = "binary"
-        config["count_POS"] = True
-        config["calc_polarity"] = False
-        config["use_bestwords"] = False
-        config["to_lower"] = True
-    elif label == category_food_speed:
-        config["target_field"] = label
-        config["vocabulary"] = __vocabulary
-        config["mode"] = "binary"
-        config["count_POS"] = True
-        config["calc_polarity"] = True
-        config["use_bestwords"] = False
-        config["to_lower"] = True
-    elif label == category_service_quality:
+#region categories configurations
+
+def __load_service_quality_config():
+    global __category_service_quality_config
+    if not __category_service_quality_config:
         config = {
-        'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
-        'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
-        'tf_idf_vector': False,
-        'counter_vector': True,
-        'binary_vector': False,
-        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
-        'surrounding_words': True,
-        'polarity_vocabulary': 'vocabularies/polarity_words.txt',
-        'positive_words_count': True,
-        'negative_words_count': True,
-        'polarity_count': True,
-        'parts_of_speech': True,
-        'uni_gram': True,
-        'bi_gram': False,
-        'not_count': False,
-        'remove_stop_words': False
-    }
-    elif label == category_dish_size:
+            'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
+            'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
+            'tf_idf_vector': False,
+            'counter_vector': True,
+            'binary_vector': False,
+            'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
+            'surrounding_words': True,
+            'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+            'positive_words_count': True,
+            'negative_words_count': True,
+            'polarity_count': True,
+            'parts_of_speech': True,
+            'uni_gram': True,
+            'bi_gram': False,
+            'not_count': False,
+            'remove_stop_words': False
+        }
+
+        if config.has_key('polarity_vocabulary'):
+            if isinstance(config['polarity_vocabulary'], str):
+                config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(
+                    config['polarity_vocabulary'])
+        if config.has_key('best_representing_words_list'):
+            if isinstance(config['best_representing_words_list'], str):
+                config['best_representing_words_list'] = vocabularies.read_best_words_list(
+                    config['best_representing_words_list'])
+        if config.has_key('text_to_vector_bi_vocabulary'):
+            if isinstance(config['text_to_vector_bi_vocabulary'], str):
+                config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(
+                    config['text_to_vector_bi_vocabulary'])
+        if config.has_key('text_to_vector_uni_vocabulary'):
+            if isinstance(config['text_to_vector_uni_vocabulary'], str):
+                config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(
+                    config['text_to_vector_uni_vocabulary'])
+
+        __category_service_quality_config = config
+
+def __load_dish_size_config():
+    global  __category_dish_size_config
+    if not __category_dish_size_config:
         config = {
             'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
             'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
@@ -335,10 +349,73 @@ def get_label_config(label):
             'not_count': False,
             'remove_stop_words': False
         }
+        if config.has_key('polarity_vocabulary'):
+            if isinstance(config['polarity_vocabulary'], str):
+                config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(
+                    config['polarity_vocabulary'])
+        if config.has_key('best_representing_words_list'):
+            if isinstance(config['best_representing_words_list'], str):
+                config['best_representing_words_list'] = vocabularies.read_best_words_list(
+                    config['best_representing_words_list'])
+        if config.has_key('text_to_vector_bi_vocabulary'):
+            if isinstance(config['text_to_vector_bi_vocabulary'], str):
+                config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(
+                    config['text_to_vector_bi_vocabulary'])
+        if config.has_key('text_to_vector_uni_vocabulary'):
+            if isinstance(config['text_to_vector_uni_vocabulary'], str):
+                config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(
+                    config['text_to_vector_uni_vocabulary'])
+
+        __category_dish_size_config = config
+
+def __load_food_quality_config():
+    global __category_food_quality_config
+    if not __category_food_quality_config:
+        config = {}
+        config["target_field"] = category_food_quality
+        config["vocabulary"] = __vocabulary
+        config["mode"] = "binary"
+        config["count_POS"] = True
+        config["calc_polarity"] = False
+        config["use_bestwords"] = False
+        config["to_lower"] = False
+        __category_food_quality_config = config
+
+def __load_food_speed_config():
+    global __category_food_speed_config
+    if not __category_food_speed_config:
+        config = {}
+        config["target_field"] = category_food_speed
+        config["vocabulary"] = __vocabulary
+        config["mode"] = "binary"
+        config["count_POS"] = False
+        config["calc_polarity"] = False
+        config["use_bestwords"] = False
+        config["to_lower"] = True
+        __category_food_speed_config = config
+
+def load_configs():
+    __load_dish_size_config()
+    __load_food_quality_config()
+    __load_food_speed_config()
+    __load_service_quality_config()
+
+def get_label_config(label):
+    config = {}
+    if label == category_food_speed:
+        config = __category_food_speed_config
+    elif label == category_food_quality:
+        config =__category_food_quality_config
+    elif label == category_dish_size:
+        config = __category_dish_size_config
+    elif label == category_service_quality:
+        config = __category_service_quality_config
     else:
         raise "Label does not exists"
 
     return config
+
+#endregion
 
 def text_to_feat_vector(text, config, label):
     # get vector according to Sunny's code
@@ -399,9 +476,10 @@ def tag_review(private_id, models, review, save_to_Db):
     try:
         # Classifying review with every model
         for label, model in models.iteritems():
-            log("Classifying review private_id : " + str(private_id) + " for category : " + label)
+            log("Getting config to classify review private_id : " + str(private_id) + " for category : " + label)
             cur_config = get_label_config(label)
             vector = text_to_feat_vector(review, cur_config, label)
+            log("Classifying review private_id : " + str(private_id) + " for category : " + label)
             rank = model.predict(vector)
             values[label] = rank
 
@@ -514,8 +592,13 @@ def main():
         labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
         if tag_reviews:
+            log("Loading vocabulary to memory...")
+            load_vocabulary()
+            log("Loading all categories configuratiosn to memory...")
+            load_configs()
             log("Tagging all reviews and updating categories in the DB")
-            tag_reviews_multi(num_of_reviews=1000, num_of_threads=20, bulk_size=10, labels=labels)
+            tag_all_reviews(labels, 1000)
+            #tag_reviews_multi(num_of_reviews=1000, num_of_threads=1, bulk_size=10, labels=labels)
 
         if update_restaurants:
             log("Ranking restaurants according to tagged reviews")

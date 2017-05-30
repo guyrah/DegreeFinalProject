@@ -14,9 +14,9 @@ class logLevels:
 class config:
     mongoDbURL = 'mongodb://193.106.55.77:27017'
     dataSetFilePath = "tagged_data.json"
-    positiveWordsFileName= 'positive-words_raw.txt'
-    negativeWordsFileName = 'negative-words_raw.txt'
-    polarityDictFileName = 'polarity_words_vocabulary.txt'
+    positiveWordsFileName= 'vocabularies/positive-words_raw.txt'
+    negativeWordsFileName = 'vocabularies/negative-words_raw.txt'
+    polarityDictFileName = 'vocabularies/polarity_words.txt'
     qualityRankImportantWordsFile = "quality-rank-important.txt"
     fastRankImportantWordsFile = "fast-rank-important.txt"
     bestWordsPath = 'best-words.txt'
