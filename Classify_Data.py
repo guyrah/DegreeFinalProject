@@ -580,7 +580,7 @@ def update_restaurant_in_db(rest_id, normalized_dict):
             db[restaurant_collection].update({"business_id" : rest_id},
                                           {"$set":
                                               {
-                                                  db_key : int(value),
+                                                  db_key : value,
                                               }})
         db[restaurant_collection].update({"business_id": rest_id},
                                  {"$set":
