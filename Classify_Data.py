@@ -254,7 +254,7 @@ def get_connection():
         _db = client.project77DB
     return _db
 
-def get_ids_to_update(mongo_url, tgt_path, limit):
+def load_reviews_to_fs(mongo_url, tgt_path, limit):
     db = get_connection()
 
     if limit > 0:
@@ -497,11 +497,6 @@ def tag_all_reviews(labels, num_of_reviews):
 
     models = load_models(labels)
 
-    log("Getting reviews texts and ids to file : " + str(review_ids_to_update_path))
-
-    # unmark this line to update reviews to file system from mongoDB
-    #get_ids_to_update(mongoDbURL, review_ids_to_update_path, 0)
-
     log("Starting to classify reviews")
 
     classify_reviews(models, num_of_reviews)
@@ -592,13 +587,15 @@ def main():
         labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
         if tag_reviews:
+            log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
+            load_reviews_to_fs(mongoDbURL, review_ids_to_update_path, 0)
             log("Loading vocabulary to memory...")
             load_vocabulary()
             log("Loading all categories configuratiosn to memory...")
             load_configs()
             log("Tagging all reviews and updating categories in the DB")
-            tag_all_reviews(labels, 1000)
-            #tag_reviews_multi(num_of_reviews=1000, num_of_threads=1, bulk_size=10, labels=labels)
+            #tag_all_reviews(labels, 1000)
+            tag_reviews_multi(num_of_reviews=1000, num_of_threads=1, bulk_size=10, labels=labels)
 
         if update_restaurants:
             log("Ranking restaurants according to tagged reviews")
