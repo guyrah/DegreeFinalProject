@@ -1,7 +1,26 @@
 import NLP_Utils
 import re
+import vocabularies
 
 def prepare_text(text, config):
+    #region load vocab
+    if config.has_key('polarity_vocabulary'):
+        if isinstance(config['polarity_vocabulary'], str):
+            config['polarity_vocabulary'] = vocabularies.read_polarity_vocabulary(
+                config['polarity_vocabulary'])
+    if config.has_key('best_representing_words_list'):
+        if isinstance(config['best_representing_words_list'], str):
+            config['best_representing_words_list'] = vocabularies.read_best_words_list(
+                config['best_representing_words_list'])
+    if config.has_key('text_to_vector_bi_vocabulary'):
+        if isinstance(config['text_to_vector_bi_vocabulary'], str):
+            config['text_to_vector_bi_vocabulary'] = vocabularies.read_vocabulary(
+                config['text_to_vector_bi_vocabulary'])
+    if config.has_key('text_to_vector_uni_vocabulary'):
+        if isinstance(config['text_to_vector_uni_vocabulary'], str):
+            config['text_to_vector_uni_vocabulary'] = vocabularies.read_vocabulary(
+                config['text_to_vector_uni_vocabulary'])
+    #endregion
     prepared_text = list()
 
     if config.has_key('remove_stop_words'):

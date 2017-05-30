@@ -1,5 +1,4 @@
 import re
-import train
 from sklearn import tree
 from stemming.porter2 import stem
 import simplejson as json
@@ -176,14 +175,14 @@ def json_to_csv(src_path, tgt_path):
 
                 tgt_file.write(','.join(current_fields) + '\n')
 
-
+"""
 def prepare_tagged_data_to_train(datasetFilePath, jsonFieldName, target_field, vocabulary, mode):
-    """
+    "" "
        fields = ['review_id', 'qualityrank','quality_of_service_rank',\
                  'fast_rank','price_rank','big_dish_rank',\
                  'value_for_money_rank','clean_rank',\
                  'good_for_vegan_rank','good_for_meat_rank']
-    """
+    "" "
 
     if (mode in vectorMode.modes):
 
@@ -228,7 +227,7 @@ def json_stats_counter(src_path):
     for k,v in stats_counter.iteritems():
         print k, v
 
-
+"""
 
 
 def count_polarity_words(text, vocabulary):
@@ -271,7 +270,7 @@ def create_words_polarity_vocabulary(positive_path, negative_path, tgt_path):
     with open(tgt_path, 'w') as tgt_file:
         for k, v in final_list.iteritems():
             tgt_file.write(k + ',' + str(v) + '\n')
-
+"""
 
 def create_best_words_list(data_path, data_field, target_field, save_path, vocabulary, number_of_words=10):
     # Gets the minimal max depth needed to get the wanted number of words
@@ -353,7 +352,8 @@ def get_surrounding_words(text, words_before=3, words_after=7):
             surrounding_words.extend(text[start_index:end_index])
 
     return " ".join(surrounding_words), reps
-
+"""
+"""
 def read_best_words_list(path):
     best_words = list()
 
@@ -362,3 +362,5 @@ def read_best_words_list(path):
             best_words.append(str(line.split(',')[0]))
 
     return best_words
+    
+"""

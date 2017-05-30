@@ -1,6 +1,6 @@
 import sys
 from sklearn.externals import joblib
-import Mongo_Access
+import feature_extraction_functions
 import Sunny_NLP_Utils
 import sunny_featuresExtractor
 from datetime import datetime
@@ -18,15 +18,22 @@ mongoDbHost = "193.106.55.77"
 mongoDbPort = 27017
 
 #reviews_collection = "reviews_sunny"
-reviews_collection = "reviews_threading"
+#reviews_collection = "reviews_threading"
+reviews_collection = "reviews_preprod"
 restaurant_collection = "restaurants_sunny"
 
-review_ids_to_update_path = "models/ids_to_update.json"
-rest_ids_path = "models/rest_ids.txt"
-vocabulary_path = "models/vocabulary_for_example_models.txt"
-vocabulary = Sunny_NLP_Utils.read_vocabulary(vocabulary_path)
+review_ids_to_update_path = "models/Resources/ids_to_update.json"
+rest_ids_path = "models/Resources/rest_ids.txt"
+vocabulary_path = "models/Resources/vocabulary_for_example_models.txt"
+__vocabulary = None
 jsonDataField = "text"
 jsonPrivateIdField = "private_id"
+
+category_dish_size = "big_dish_rank"
+category_service_quality = "quality_of_service_rank"
+category_food_quality = "qualityrank"
+category_food_speed = "fast_rank"
+
 _db = None
 _logfile = None
 _log_file_name = "models/logs/logs.txt"
@@ -218,6 +225,22 @@ def slave(bulk_size, models):
 
 #endregion
 
+#region filesystem
+
+def update_vocabulary():
+    vocabulary = dict()
+    global __vocabulary
+    if not __vocabulary:
+        with open(vocabulary_path, 'r') as file:
+            for i, line in enumerate(file):
+                line = line.split(',')
+                vocabulary[str(line[0])] = Sunny_NLP_Utils.VocabulrayItem(index=i, frequency=line[1])
+        __vocabulary = vocabulary
+
+#endregion
+
+#region mongo
+
 def get_connection():
     global _db
     if not _db:
@@ -237,32 +260,101 @@ def get_ids_to_update(mongo_url, tgt_path, limit):
         for i, doc in enumerate(cursor):
             file.write(dumps(doc) + '\n')
 
+def update_review(private_id, values):
+    log("Updating review private id: " + str(private_id) + " with classified models inside the DB...")
+
+    db = get_connection()
+
+    # tagging each label in the DB according to model predictions
+    for label, rank in values.iteritems():
+        db[reviews_collection].update({jsonPrivateIdField: private_id},
+                                      {"$set":
+                                          {
+                                              label: int(rank)
+                                          }})
+
+    # marking the review as tagged by the algorithm
+    db[reviews_collection].update({jsonPrivateIdField: private_id},
+                                  {"$set":
+                                      {
+                                          "auto_tag": 1,
+                                      }})
+#endregion
+
 def get_label_config(label):
     config = {}
-    config["target_field"] = label
-    if label == "qualityrank":
-        config["vocabulary"] = vocabulary
+    if label == category_food_quality:
+        config["target_field"] = label
+        config["vocabulary"] = __vocabulary
         config["mode"] = "binary"
-        config["count_POS"] = False
+        config["count_POS"] = True
         config["calc_polarity"] = False
         config["use_bestwords"] = False
         config["to_lower"] = True
-    elif label == "fast_rank":
-        config["vocabulary"] = vocabulary
+    elif label == category_food_speed:
+        config["target_field"] = label
+        config["vocabulary"] = __vocabulary
         config["mode"] = "binary"
         config["count_POS"] = True
         config["calc_polarity"] = True
         config["use_bestwords"] = False
         config["to_lower"] = True
+    elif label == category_service_quality:
+        config = {
+        'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
+        'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
+        'tf_idf_vector': False,
+        'counter_vector': True,
+        'binary_vector': False,
+        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
+        'surrounding_words': True,
+        'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+        'positive_words_count': True,
+        'negative_words_count': True,
+        'polarity_count': True,
+        'parts_of_speech': True,
+        'uni_gram': True,
+        'bi_gram': False,
+        'not_count': False,
+        'remove_stop_words': False
+    }
+    elif label == category_dish_size:
+        config = {
+            'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
+            'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
+            'tf_idf_vector': False,
+            'counter_vector': True,
+            'binary_vector': False,
+            'best_representing_words_list': 'vocabularies/dish_size_best_words_custom.txt',
+            'surrounding_words': True,
+            'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+            'polarity_count': True,
+            'parts_of_speech': True,
+            'uni_gram': True,
+            'bi_gram': False,
+            'not_count': False,
+            'remove_stop_words': False
+        }
+    else:
+        raise "Label does not exists"
+
     return config
 
-def text_to_feat_vector(text, config):
-    vector = featuresExtractor.calcFeatures(text,config["vocabulary"],config["mode"],config["count_POS"],config["calc_polarity"], config["use_bestwords"], config["target_field"], config["to_lower"])
+def text_to_feat_vector(text, config, label):
+    # get vector according to Sunny's code
+    if label in [category_food_quality, category_food_speed]:
+        vector = sunny_featuresExtractor.calcFeatures(text,config["vocabulary"],config["mode"],config["count_POS"],config["calc_polarity"], config["use_bestwords"], config["target_field"], config["to_lower"])
+    # get vector according to Guy's code
+    elif label in [category_service_quality, category_dish_size]:
+        vector = feature_extraction_functions.prepare_text(text, config)
+    else:
+        raise "label error"
+
     return vector
 
 def load_models(labels):
-
     # models path should look like models/*labelname_model.pkl
+    #calculating models file names
     models_paths = {}
     for label in labels:
         models_paths[label] = str("models/" + label + "_model.pkl")
@@ -274,25 +366,6 @@ def load_models(labels):
              models[label] = model
 
     return models
-
-def update_review(private_id, values):
-    log("Updating review private id: " + str(private_id) +" with classified models inside the DB...")
-    db = get_connection()
-
-    # tagging each label in the DB according to model predictions
-    for label, rank in values.iteritems():
-        db[reviews_collection].update({jsonPrivateIdField  : private_id},
-                                      { "$set" :
-        {
-            label : int(rank)
-        }})
-
-    # marking the review as tagged by the algorithm
-    db[reviews_collection].update({jsonPrivateIdField : private_id},
-                                  {"$set":
-                                {
-                                    "auto_tag" : 1
-                                }})
 
 def classify_reviews(models, num_of_reviews):
     global _reviews_jsons
@@ -320,7 +393,6 @@ def classify_reviews(models, num_of_reviews):
                 log("Error : Review not in ascii format. num: " + str(errs_count))
         line_counter += 1
 
-
 def tag_review(private_id, models, review, save_to_Db):
     values = dict()
 
@@ -329,36 +401,36 @@ def tag_review(private_id, models, review, save_to_Db):
         for label, model in models.iteritems():
             log("Classifying review private_id : " + str(private_id) + " for category : " + label)
             cur_config = get_label_config(label)
-            vector = text_to_feat_vector(review, cur_config)
+            vector = text_to_feat_vector(review, cur_config, label)
             rank = model.predict(vector)
-            # log("review tagged for label " + label + " as : " + str(rank))
             values[label] = rank
-            if save_to_Db == True:
-                update_review(private_id, values)
+
+        if save_to_Db:
+            update_review(private_id, values)
         return True
     except:
         log("Exception occured while tagging review " + str(private_id) + ". exception: " + str(sys.exc_info()))
         return False
-
-
 """
 This function updates all the reviews in the DB with the rank according to the trained model
 """
 def tag_all_reviews(labels, num_of_reviews):
-    #{"qualityrank": "models/qualityrank_model.pkl", "fast_rank": "models/fast_rank_model.pkl"}
-
     log("loading models from files")
+
     models = load_models(labels)
 
     log("Getting reviews texts and ids to file : " + str(review_ids_to_update_path))
-    # unmark this line to get the reviews to file system
+
+    # unmark this line to update reviews to file system from mongoDB
     #get_ids_to_update(mongoDbURL, review_ids_to_update_path, 0)
 
     log("Starting to classify reviews")
+
     classify_reviews(models, num_of_reviews)
 
     log("Finished to classify reviews")
 
+#region Restaurants
 
 """
 This function updates the score for each restaurant with reviews
@@ -429,46 +501,34 @@ def get_rest_reviews_sum(rest_id, labels):
 
     return rank_sum
 
+#endregion
+
 def main():
-    start = datetime.now()
     try:
+        startTime = datetime.now()
         init_logger()
-
-        global _reviews_jsons
-
         log("starting script...")
-
         tag_reviews = True
         update_restaurants = False
 
-        labels = ["qualityrank", "fast_rank"]
+        labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
-        if tag_reviews == True:
-            log("Tagging all reviews in the DB")
-            """
-            log("Tagging single threaded...")
-            start = datetime.now()
-            tag_all_reviews(labels, 1000)
-            end = datetime.now()
-            dur = end - start
-            log("Duration = " + str (dur))
-            _reviews_jsons = None
-            """
-            log("Tagging multi threaded...")
+        if tag_reviews:
+            log("Tagging all reviews and updating categories in the DB")
+            tag_reviews_multi(num_of_reviews=1000, num_of_threads=20, bulk_size=10, labels=labels)
 
-            tag_reviews_multi(num_of_reviews=1000, num_of_threads=10, bulk_size=1000, labels=labels)
-
-        if update_restaurants == True:
+        if update_restaurants:
             log("Ranking restaurants according to tagged reviews")
             update_restuarants_ranks(labels)
 
         log("Finished script successfully.")
 
-        end = datetime.now()
-        dur = end - start
+        endTime = datetime.now()
+        dur = endTime - startTime
         log("Script duration = " + str(dur))
+
     except:
-        log("**********Exception occured********** : " + str(sys.exc_info()))
+        log("**********Fatal Exception Occurred********** : " + str(sys.exc_info()))
         raise
 
 main()
