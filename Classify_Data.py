@@ -19,8 +19,8 @@ mongoDbURL = 'mongodb://193.106.55.77:27017'
 mongoDbHost = "193.106.55.77"
 mongoDbPort = 27017
 
-#reviews_collection = "reviews_sunny"
-reviews_collection = "reviews_threading"
+reviews_collection = "reviews_sunny"
+#reviews_collection = "reviews_threading"
 #reviews_collection = "reviews_preprod"
 restaurant_collection = "restaurants_sunny"
 
@@ -43,7 +43,7 @@ category_food_speed = "fast_rank"
 
 _db = None
 _logfile = None
-_log_file_name = "models/logs/logs2.txt"
+_log_file_name = "models/logs/logs1.txt"
 _reviews_jsons = None
 _reviews_bulk = None
 _count_success = None
@@ -259,9 +259,9 @@ def load_reviews_to_fs(mongo_url, tgt_path, limit):
     db = get_connection()
 
     if limit > 0:
-        cursor = db[reviews_collection].find({"fast_rank":{"$exists": False}}, {jsonPrivateIdField  : "1", "business_id" : 1 , "text" : 1}).limit(limit)
+        cursor = db.reviews.find({"fast_rank":{"$exists": False}}, {jsonPrivateIdField  : "1", "business_id" : 1 , "text" : 1}).limit(limit)
     else:
-        cursor = db[reviews_collection].find({"fast_rank": {"$exists": False}}, {jsonPrivateIdField : "1", "business_id": 1, "text": 1})
+        cursor = db.reviews.find({"fast_rank": {"$exists": False}}, {jsonPrivateIdField : "1", "business_id": 1, "text": 1})
 
     with open(tgt_path, 'w+') as file:
         for i, doc in enumerate(cursor):
@@ -284,7 +284,7 @@ def update_review(private_id, values):
     db[reviews_collection].update({jsonPrivateIdField: private_id},
                                   {"$set":
                                       {
-                                          "auto_tag": 1,
+                                          "auto_tag": 1
                                       }})
 #endregion
 
@@ -613,18 +613,21 @@ def main():
         startTime = datetime.now()
         init_logger()
         log("starting script...")
-        tag_reviews = False
-        update_restaurants = True
-        labels = [category_food_quality, category_food_speed]
-        #labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
+        tag_reviews = True
+        update_restaurants = False
+        #labels = [category_food_quality, category_food_speed]
+        labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
         if tag_reviews:
-            #log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
-            #load_reviews_to_fs(mongoDbURL, review_ids_to_update_path, 0)
+            log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
+            load_reviews_to_fs(mongoDbURL, review_ids_to_update_path, 0)
+
             log("Loading vocabulary to memory...")
             load_vocabulary()
+
             log("Loading all categories configuratiosn to memory...")
             load_configs()
+
             log("Tagging all reviews and updating categories in the DB")
             #tag_all_reviews(labels, 1000)
             tag_reviews_multi(num_of_reviews=0, num_of_threads=25, bulk_size=1000, labels=labels)
@@ -643,4 +646,4 @@ def main():
         log("**********Fatal Exception Occurred********** : " + str(sys.exc_info()))
         raise
 
-main()
+mai
