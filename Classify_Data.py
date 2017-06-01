@@ -516,7 +516,7 @@ def update_restuarants_ranks(labels):
     log("Starting to update restaurants")
 
     # remove this line if you want to re calculate the restaurants ids with reviews
-    #read_restaurants_ids_with_reviews()
+    read_restaurants_ids_with_reviews()
 
     with open(rest_ids_path,"r") as rest_ids:
         for line in rest_ids:
@@ -615,8 +615,8 @@ def main():
         log("starting script...")
         tag_reviews = False
         update_restaurants = True
-        labels = [category_food_quality, category_food_speed]
-        #labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
+        #labels = [category_food_quality, category_food_speed]
+        labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
         if tag_reviews:
             #log("Getting reviews texts and ids from DB to file : " + str(review_ids_to_update_path))
