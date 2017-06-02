@@ -7,5 +7,5 @@ def refresh_vocabulary():
     data_path = "tagged_data.json"
 
     get_tagged_data(mongo_url, data_path)
-    NLP_Utils.create_vocabulary(data_path, 'vocabulary.txt')
+    NLP_Utils.create_vocabulary(data_path, 'text_to_vector_vocabulary.txt', repetitions_thershold=10)
     NLP_Utils.json_stats_counter(data_path)

@@ -1,0 +1,11 @@
+portion,0.701392817424
+size,0.0612926216292
+big,
+small,
+huge,
+large,
+big,
+small,
+huge,
+large,
+more,

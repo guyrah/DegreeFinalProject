@@ -87,6 +87,46 @@ def get_restaurant_business_id(json_file_path, ids_path=None, overwrite=False):
     return resturant_ids
 
 
+def json_to_csv(src_path, tgt_path):
+    fields = ['review_id', 'qualityrank','quality_of_service_rank',\
+              'fast_rank','price_rank','big_dish_rank',\
+              'value_for_money_rank','clean_rank',\
+              'good_for_vegan_rank','good_for_meat_rank']
+
+    with open(src_path,'r') as src_file:
+        with open(tgt_path, 'w') as tgt_file:
+            tgt_file.write(','.join(fields) + '\n')
+
+            # Runns on each line - which supposed to be a doc
+            for line in src_file:
+                current_json = json.loads(line)
+                current_fields = list()
+                for f in fields:
+                    current_fields.append(str(current_json.get(f,'')))
+
+                tgt_file.write(','.join(current_fields) + '\n')
+
+
+def json_stats_counter(src_path):
+    fields = ['qualityrank','quality_of_service_rank',\
+              'fast_rank','price_rank','big_dish_rank',\
+              'value_for_money_rank','clean_rank',\
+              'good_for_vegan_rank','good_for_meat_rank']
+    stats_counter = dict()
+
+    for f in fields:
+        stats_counter[f] = [0] * 4
+
+
+    with open(src_path,'r') as src_file:
+        for line in src_file:
+            current_json = json.loads(line)
+            for f in fields:
+                if current_json.has_key(f):
+                    stats_counter[f][int(current_json[f])] = int(stats_counter.get(f,[0,0,0,0])[int(current_json[f])]) + 1
+
+    for k,v in stats_counter.iteritems():
+        print k, v
 
 
 

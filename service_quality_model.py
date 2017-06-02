@@ -1,81 +1,134 @@
-import simplejson as json
-import NLP_Utils
-import pydotplus
-from sklearn import tree
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import cross_val_predict
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+import train_model
 
-data_path = 'tagged_data.json'
-data_field = 'text'
-target_field = 'quality_of_service_rank'
-# target_field = 'qualityrank'
-# target_field = 'value_for_money_rank'
-vocabulary_path = 'vocabulary.txt'
+from sklearn import tree
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
+src_path = 'tagged_data.json'
+data_field = 'text'
+target_field = 'quality_of_service_rank'
 
-def service_prepare_tagged_data_to_train(src_path,
-                                 data_field,
-                                 target_field,
-                                 vocabulary,
-                                 class_map=None):
-    """
-       fields = ['review_id', 'qualityrank','quality_of_service_rank',\
-                 'fast_rank','price_rank','big_dish_rank',\
-                 'value_for_money_rank','clean_rank',\
-                 'good_for_vegan_rank','good_for_meat_rank']
-    """
-    with open(src_path, 'r') as src_file:
-        filtered_count = 0
-        data = list()
-        target = list()
-        # Runns on each line - which supposed to be a doc
-        for line in src_file:
-            current_json = json.loads(line)
-            if current_json.has_key(target_field):
-                # If no filter is asked
-                if (class_map == None):
-                    data.append(NLP_Utils.text_to_hot_vector(current_json[data_field], vocabulary))
-                    target.append(int(current_json[target_field]))
-                # If filter is needed
-                else:
-                    # Check if json is valid according to filter
-                    if (int(current_json[target_field]) in class_map):
-                        data.append(NLP_Utils.text_to_hot_vector(current_json[data_field], vocabulary))
-                        target.append(class_map[int(current_json[target_field])])
-                    # If filtered a json
-                    else:
-                        filtered_count += 1
+def check_best_config():
+    feature_extraction_config = {
+                'text_to_vector_uni_vocabulary': ['vocabularies/text_to_vector_uni_vocabulary_10.txt',
+                                                  'vocabularies/text_to_vector_uni_vocabulary_20.txt',
+                                                  'vocabularies/text_to_vector_uni_vocabulary_-1.txt',
+                                                  'vocabularies/text_to_vector_vocabulary.txt'],
+                #'text_to_vector_bi_vocabulary': ['vocabularies/text_to_vector_bi_vocabulary.txt'],
+                'tf_idf_vector': [True, False],
+                'counter_vector': [True, False],
+                #'binary_vector': [True,False],
+                'best_representing_words_list': ['vocabularies/service_best_words.txt',
+                                                 'vocabularies/service_best_words_10.txt',
+                                                 'vocabularies/service_best_words_12.txt',
+                                                 'vocabularies/service_best_words_custom.txt'],
+                'surrounding_words': [True, False],
+                'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+                'polarity_count': [True, False],
+                'parts_of_speech': [True, False],
+                'uni_gram': [True, False],
+#                'bi_gram': [True, False],
+                'not_count': [True, False],
+                'remove_stop_words': [True, False]
+            }
+    classifiers = {
+        'SVC_linear': SVC(kernel='linear'),
+        'SVC_linear_C0,1': SVC(kernel='linear', C=0.1),
+        'SVC_linear_C10': SVC(kernel='linear', C=10),
+        'SVC_linear_C10_Gamma0,01': SVC(kernel='linear', C=10, gamma=0.01),
+        'Decision_tree_maxdepth6': tree.DecisionTreeClassifier(max_depth=6),
+        'Decision_tree': tree.DecisionTreeClassifier(),
+        'GaussianNB': GaussianNB(),
+        'Random_forest': RandomForestClassifier()
+    }
 
-        print 'filtered: ', filtered_count
-        return data, target
+    class_map = {0: 0,
+                 1: 1,
+                 # 2: 2,
+                 3: 3}
+
+    train_model.get_best_config(src_path=src_path,
+                                data_field=data_field,
+                                target_field=target_field,
+                                feature_extraction_config=feature_extraction_config,
+                                classifiers=classifiers,
+                                class_map=class_map)
 
 
-vocabulary = NLP_Utils.read_vocabulary(vocabulary_path)
-class_map = {0:0,
-             1:1,
-             2:1,
-             3:1}
-data, target = service_prepare_tagged_data_to_train(src_path=data_path,
-                                                      data_field=data_field,
-                                                      target_field=target_field,
-                                                      vocabulary=vocabulary,
-                                                      class_map=class_map)
+def train_model_for_debug():
+    feature_extraction_config = {
+        'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
+        'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
+        'tf_idf_vector': False,
+        'counter_vector': True,
+        'binary_vector': False,
+        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
+        'surrounding_words': True,
+        'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+        'positive_words_count': True,
+        'negative_words_count': True,
+        'polarity_count': True,
+        'parts_of_speech': True,
+        'uni_gram': True,
+        'bi_gram': False,
+        'not_count': False,
+        'remove_stop_words': False
+    }
 
-# clf = tree.DecisionTreeClassifier(max_depth=3)
-clf = tree.DecisionTreeClassifier()
-# clf = clf.fit(train_data, train_target)
-# clf = SVC(kernel='poly', degree=5, C=2.0)
-predict = cross_val_predict(clf, data, target, cv=3)
+    class_map = {0: 0,
+                 1: 1,
+                 # 2: 2,
+                 3: 3}
 
-print 'accuracy:', accuracy_score(target, predict)
-print confusion_matrix(target, predict)
+    data, target, original_text = train_model.prepare_data(src_path=src_path,
+                                            data_field=data_field,
+                                            target_field=target_field,
+                                            class_map=class_map,
+                                            balance_classes=False,
+                                            randomize=False,
+                                            feature_config=feature_extraction_config)
+    clf = SVC(kernel='linear')
 
-clf.fit(data, target)
-dot_data = tree.export_graphviz(clf, out_file=None)
-graph = pydotplus.graph_from_dot_data(dot_data)
-graph.write_pdf('decision_tree.pdf')
-# scores = cross_val_score(clf, data, target, cv=10)
-# print scores
+    train_model.test_model(clf, data, target, original_text, 'service_quality_mistakes.csv', verbose=True)
+
+def train():
+    feature_extraction_config = {
+        'text_to_vector_uni_vocabulary': 'vocabularies/text_to_vector_uni_vocabulary_10.txt',
+        'text_to_vector_bi_vocabulary': 'vocabularies/text_to_vector_bi_vocabulary.txt',
+        'tf_idf_vector': False,
+        'counter_vector': True,
+        'binary_vector': False,
+        'best_representing_words_list': 'vocabularies/service_best_words_custom.txt',
+        'surrounding_words': True,
+        'polarity_vocabulary': 'vocabularies/polarity_words.txt',
+        'positive_words_count': True,
+        'negative_words_count': True,
+        'polarity_count': True,
+        'parts_of_speech': True,
+        'uni_gram': True,
+        'bi_gram': False,
+        'not_count': False,
+        'remove_stop_words': False
+    }
+
+    class_map = {0: 0,
+                 1: 1,
+                 # 2: 2,
+                 3: 3}
+
+    clf = SVC(kernel='linear')
+
+    train_model.train_model(clf,
+                            src_path=src_path,
+                            data_field=data_field,
+                            target_field=target_field,
+                            export_path='Classifiers/Service_model.pkl',
+                            class_map=class_map,
+                            balance_classes=False,
+                            randomize=False,
+                            feature_config=feature_extraction_config)
+
+#check_best_config()
+#train_model_for_debug()
+train()

@@ -1,21 +1,41 @@
-import actions
+import vocabularies
 
-import Mongo_Access
+data_path = 'tagged_data.json'
+data_field = 'text'
 
-'''
-voc = NLP_Utils.read_vocabulary('vocabulary.txt')
 
-text = "I blablabla like like this place a lot. It's a good toasted hoagie.\n\nI actually don't like a my bun exploding with meat, but as a previous poster mentioned if you do maybe you wouldn't like this place.\n\nThe inside badly needs updated though. \n\nThe staff is friendly."
 
-NLP_Utils.text_to_hot_vector(text, voc)
-'''
-'''
-a = list()
-with open('tagged_data.txt', 'r') as file:
-    for line in file:
-        a.append(loads(line))
-'''
+# target_field = 'value_for_money_rank'
+vocabulary_path = 'text_to_vector_vocabulary.txt'
+from sklearn.svm import SVC
+text_to_vector_vocabulary = vocabularies.read_vocabulary('vocabularies/text_to_vector_vocabulary.txt')
 
-actions.refresh_vocabulary()
+feature_extraction_config = {
+    'tf_idf_vector': False,
+    'counter_vector': True,
+    'binary_vector': False,
+    'text_to_vector_uni_vocabulary': text_to_vector_vocabulary,
+    'uni_gram': True,
+}
 
-#Mongo_Access.get_sequences('mongodb://193.106.55.77:27017')
+#vocabularies.create_words_polarity_vocabulary('positive-words_raw.txt', 'negative-words_raw.txt', 'polarity_words.txt')
+#a = vocabularies.read_polarity_vocabulary('polarity_words.txt')
+
+#target_field = 'clean_rank'
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='clean_best_words.txt', number_of_words=10, config=feature_extraction_config)
+
+#vocabularies.create_bi_vocabulary(data_path, 'text_to_vector_bi_vocabulary.txt', 2)
+
+#vocabularies.create_vocabulary(data_path, 'text_to_vector_uni_vocabulary_10.txt', 10)
+
+#target_field = 'big_dish_rank'
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='vocabularies/dish_size_best_words_10.txt', number_of_words=10, config=feature_extraction_config)
+
+#target_field = 'quality_of_service_rank'
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='vocabularies/service_best_words_10.txt', number_of_words=10, config=feature_extraction_config)
+
+#target_field = 'qualityrank'
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='vocabularies/food_quality_best_words_10.txt', number_of_words=10, config=feature_extraction_config)
+
+#target_field = 'fast_rank'
+#vocabularies.create_best_words_list(data_path=data_path, data_field=data_field, target_field=target_field, save_path='vocabularies/fast_rank_best_words_10.txt', number_of_words=10, config=feature_extraction_config)
