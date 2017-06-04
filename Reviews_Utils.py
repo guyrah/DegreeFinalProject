@@ -1,7 +1,6 @@
 import simplejson as json
 import os
 
-
 def count_restaurant_reviews(json_file_path, restaurant_ids):
     restaurant_counter = 0
     not_restaurant_counter = 0
@@ -129,6 +128,163 @@ def json_stats_counter(src_path):
         print k, v
 
 
+def count_restaurant_fields(json_file_path, restaurant_ids):
+    counters = dict()
+    counters['stats'] = dict()
+
+    with open(json_file_path, 'r') as file:
+        for i, line in enumerate(file):
+            line_contents = json.loads(line)
+            try:
+                if str(line_contents['business_id']) in restaurant_ids:
+                    counters['stats']['restaurants'] = counters['stats'].get('restaurants', 0) + 1
+
+                    for att in line_contents['attributes'].keys():
+                        if not counters.has_key('attributes'):
+                            counters['attributes'] = dict()
+
+                        counters['attributes'][att] = '1'
+                    for field in ['Noise Level', 'Music', 'Attire', 'Ambience', 'Good for Kids', 'Price Range', 'Good For', 'Wheelchair Accessible']:
+                        if line_contents['attributes'].has_key(field):
+                            if not counters.has_key(field):
+                                counters[field] = dict()
+
+                            if isinstance(line_contents['attributes'][field], dict):
+                                did_true = False
+                                for k in line_contents['attributes'][field].keys():
+                                    if line_contents['attributes'][field][k]:
+                                        if did_true:
+                                            counters['stats']['more_than_2_true_in_key'] = counters['stats'].get('more_than_2_true_in_key', 0) + 1
+                                        else:
+                                            did_true = True
+
+                                    counters[field][k] = '1'
+                            else:
+                                counters[field][line_contents['attributes'][field]] = '1'
+                else:
+                    counters['stats']['non_restaurants'] = counters['stats'].get('non_restaurants', 0) + 1
+
+            except Exception as e:
+                counters['stats']['exceptions'] = counters['stats'].get('exceptions', 0) + 1
+                #print e
+
+            print i
+
+
+            #if i > 1000:
+            #   break
+
+
+    for k1 in counters.keys():
+        if k1 != 'stats':
+            print k1 + ':'
+            for i, k2 in enumerate(counters[k1].keys()):
+                print str(i) + '. ', k2
+
+            print
+
+    print 'general stats:'
+    for k,v in counters['stats'].iteritems():
+        print str(k) + ': ' + str(v)
+    #print counters['attributes'].keys()
+
+
+def noise_level_to_number(noise_level, fields_dict):
+    if noise_level == 'very_loud':
+        fields_dict['noise_level'] = 0
+    elif noise_level == 'loud':
+        fields_dict['noise_level'] = 1.66
+    elif noise_level == 'average':
+        fields_dict['noise_level'] = 3.33
+    elif noise_level == 'quiet':
+        fields_dict['noise_level'] = 5
+    else:
+        raise 'unknown noise level'
+
+
+def ambience_to_number(ambience, fields_dict):
+    for k, v in ambience.iteritems():
+        if k == 'romantic':
+            if v:
+                fields_dict['romantic'] = 5
+            else:
+                fields_dict['romantic'] = 0
+        if k == 'casual':
+            if v:
+                fields_dict['casual'] = 5
+            else:
+                fields_dict['casual'] = 0
+        if k == 'upscale':
+            if v:
+                fields_dict['upscale'] = 5
+            else:
+                fields_dict['upscale'] = 0
+
+def wheelchair_to_number(wheelchair, fields_dict):
+    if wheelchair:
+        fields_dict['wheelchair'] = 5
+    else:
+        fields_dict['wheelchair'] = 0
+
+
+def good_for_kids_to_number(good_for_kids, fields_dict):
+    if good_for_kids:
+        fields_dict['good_for_kids'] = 5
+    else:
+        fields_dict['good_for_kids'] = 0
+
+
+def price_level_to_number(price_level, fields_dict):
+    if price_level == 1:
+        fields_dict['cheap'] = 5
+    elif price_level == 2:
+        fields_dict['cheap'] = 3.33
+    elif price_level == 3:
+        fields_dict['cheap'] = 1.66
+    elif price_level == 4:
+        fields_dict['cheap'] = 0
+    else:
+        raise 'unknown cheap'
+
+
+def get_business_json(json_file_path, restaurant_ids):
+    business_jsons = list()
+
+    with open(json_file_path, 'r') as file:
+        for i, line in enumerate(file):
+            line_contents = json.loads(line)
+            try:
+                if str(line_contents['business_id']) in restaurant_ids:
+                    business_jsons.append(dict())
+                    business_jsons[-1]['business_id'] = line_contents['business_id']
+                    business_jsons[-1]['full_address'] = line_contents['full_address']
+                    business_jsons[-1]['name'] = line_contents['name']
+                    business_jsons[-1]['hours'] = line_contents['hours']
+                    #business_jsons[-1]['neighborhood'] = line_contents['neighborhood']
+                    business_jsons[-1]['city'] = line_contents['city']
+                    business_jsons[-1]['stars'] = line_contents['stars']
+                    business_jsons[-1]['open'] = line_contents['open']
+
+
+                    if line_contents['attributes'].has_key('Price Range'):
+                        price_level_to_number(line_contents['attributes']['Price Range'], business_jsons[-1])
+                    if line_contents['attributes'].has_key('Good for Kids'):
+                        good_for_kids_to_number(line_contents['attributes']['Good for Kids'], business_jsons[-1])
+                    if line_contents['attributes'].has_key('Wheelchair Accessible'):
+                        wheelchair_to_number(line_contents['attributes']['Wheelchair Accessible'], business_jsons[-1])
+                    if line_contents['attributes'].has_key('Ambience'):
+                        ambience_to_number(line_contents['attributes']['Ambience'], business_jsons[-1])
+                    if line_contents['attributes'].has_key('Noise Level'):
+                        noise_level_to_number(line_contents['attributes']['Noise Level'], business_jsons[-1])
+
+            except Exception as e:
+                #counters['stats']['exceptions'] = counters['stats'].get('exceptions', 0) + 1
+                print e
+
+            print i
+
+        return business_jsons
+
 
 restaurant_business_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_dataset_business.json'
 restaurant_reviews_file = '/home/osboxes/Desktop/yelp_dataset/yelp_academic_dataset_review.json'
@@ -136,8 +292,8 @@ restaurant_business_ids_path = '/home/osboxes/Desktop/yelp_dataset/resturant_bus
 restaurant_reviews_sample_file = 'reviews_sample.txt'
 
 
+#restaurant_ids = get_restaurant_business_id(restaurant_business_file,restaurant_business_ids_path)
+#count_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
+#get_business_json('/home/osboxes/Desktop/yelp_dataset/yelp_academic_dataset_business.json', restaurant_ids)
 
-
-restaurant_ids = get_restaurant_business_id(restaurant_business_file,restaurant_business_ids_path)
-count_restaurant_reviews(restaurant_reviews_file, restaurant_ids)
 
