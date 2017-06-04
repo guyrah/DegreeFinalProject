@@ -613,8 +613,8 @@ def main():
         startTime = datetime.now()
         init_logger()
         log("starting script...")
-        tag_reviews = True
-        update_restaurants = False
+        tag_reviews = False
+        update_restaurants = True
         #labels = [category_food_quality, category_food_speed]
         labels = [category_food_quality, category_food_speed, category_service_quality, category_dish_size]
 
@@ -645,5 +645,3 @@ def main():
     except:
         log("**********Fatal Exception Occurred********** : " + str(sys.exc_info()))
         raise
-
-mai
