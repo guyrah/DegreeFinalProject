@@ -22,7 +22,8 @@ mongoDbPort = 27017
 #reviews_collection = "reviews_sunny"
 reviews_collection = "reviews_threading"
 #reviews_collection = "reviews_preprod"
-restaurant_collection = "restaurants_sunny"
+#restaurant_collection = "restaurants_sunny"
+restaurant_collection = "restaurants_prod"
 
 review_ids_to_update_path = "models/Resources/ids_to_update.json"
 rest_ids_path = "models/Resources/rest_ids.txt"
@@ -516,17 +517,19 @@ def update_restuarants_ranks(labels):
     log("Starting to update restaurants")
 
     # remove this line if you want to re calculate the restaurants ids with reviews
-    read_restaurants_ids_with_reviews()
+    #read_restaurants_ids_with_reviews()
 
     with open(rest_ids_path,"r") as rest_ids:
         for line in rest_ids:
             rest_id = line.strip()
             log("Trying to get restaurant reviews sum for rest_id: " + rest_id)
-            rest_rank_sum = get_rest_reviews_sum(rest_id, labels)
+            rest_rank_sum, sum_of_reviews = get_rest_reviews_sum(rest_id, labels)
+
             if(len(rest_rank_sum) > 0):
                 log("Normalizing reviews tags for rest_id: " + rest_id)
                 normalized_dict = normalize_rank_sum(rest_id, labels, rest_rank_sum)
-                update_restaurant_in_db(rest_id, normalized_dict)
+                update_restaurant_in_db(rest_id, normalized_dict, sum_of_reviews)
+
             else:
                 log("There are no tagged reviews for rest_id: " + rest_id)
 
@@ -537,19 +540,21 @@ how many reviews were tagged 3 ,2 ,1 ,0 for each label
 def get_rest_reviews_sum(rest_id, labels):
     rank_sum = dict()
     db = get_connection()
-
+    sum_of_reviews = 0
     cursor = db[reviews_collection].find({"business_id" : rest_id, "auto_tag" : 1})
 
     for i, doc in enumerate(cursor):
+        cur_json = json.loads(dumps(doc))
+        sum_of_reviews += 1
+
         for label in labels:
-            cur_json = json.loads(dumps(doc))
             try:
-                cur_rank = int(doc[label])
+                cur_rank = int(cur_json[label])
                 rank_sum[(label,cur_rank)] = rank_sum.get((label,cur_rank), 0) + 1
             except:
                 log("Sample not tagged...")
 
-    return rank_sum
+    return rank_sum, sum_of_reviews
 
 """
 This function normalizes the sum rank to a number between 0 to 5 for each category
@@ -560,16 +565,18 @@ def normalize_rank_sum(rest_id, labels, rest_rank_sum):
     normalized_dict = {}
 
     for key, value in rest_rank_sum.iteritems():
-        normalized_dict[key[0]] = tuple(map(operator.add, normalized_dict.get(key[0],(0,0)), (key[1]* value, value)))
+        if key[1] != 0:
+            normalized_dict[key[0]] = tuple(map(operator.add, normalized_dict.get(key[0],(0,0)), (key[1]* value, value)))
 
     #calc average and normalize
     for label, sum_and_count in normalized_dict.iteritems():
         normalized_dict[label] = (float(sum_and_count[0]) / float(sum_and_count[1])) * 5.0 / 3.0
 
     log(str(normalized_dict))
+
     return normalized_dict
 
-def update_restaurant_in_db(rest_id, normalized_dict):
+def update_restaurant_in_db(rest_id, normalized_dict, sum_of_reviews):
     log("Trying to update scores in DB for rest_id: " + str(rest_id))
     try:
         db = get_connection()
@@ -585,6 +592,7 @@ def update_restaurant_in_db(rest_id, normalized_dict):
         db[restaurant_collection].update({"business_id": rest_id},
                                  {"$set":
                                      {
+                                         "sum_of_reviews" : sum_of_reviews,
                                          "auto_tag": 1,
                                      }})
     except:
